@@ -1,0 +1,67 @@
+{
+  "apple-tethering-setup": {
+    "archived_at": null,
+    "created_at": "2026-05-12T09:33:10.564550+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-05-12T09:37:07.476048+00:00",
+    "last_used_at": "2026-05-13T06:34:53.724283+00:00",
+    "last_viewed_at": "2026-05-13T06:34:53.723395+00:00",
+    "patch_count": 3,
+    "pinned": false,
+    "state": "active",
+    "use_count": 2,
+    "view_count": 2
+  },
+  "audio-extraction": {
+    "archived_at": null,
+    "created_at": "2026-05-23T07:35:13.033089+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-05-23T11:34:29.339982+00:00",
+    "last_used_at": "2026-05-23T11:53:00.395439+00:00",
+    "last_viewed_at": "2026-05-23T11:53:00.393890+00:00",
+    "patch_count": 14,
+    "pinned": false,
+    "state": "active",
+    "use_count": 25,
+    "view_count": 25
+  },
+  "macos-download-watchdog": {
+    "archived_at": null,
+    "created_at": "2026-05-11T10:44:55.999883+00:00",
+    "created_by": "agent",
+    "last_patched_at": null,
+    "last_used_at": "2026-05-23T11:30:00.493086+00:00",
+    "last_viewed_at": "2026-05-23T11:30:00.491209+00:00",
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 3,
+    "view_count": 3
+  },
+  "pentest-workflow-toolkit": {
+    "archived_at": null,
+    "created_at": "2026-05-14T01:09:18.981155+00:00",
+    "created_by": "agent",
+    "last_patched_at": null,
+    "last_used_at": null,
+    "last_viewed_at": null,
+    "patch_count": 0,
+    "pinned": false,
+    "state": "active",
+    "use_count": 0,
+    "view_count": 0
+  },
+  "reliable-large-file-downloader": {
+    "archived_at": null,
+    "created_at": "2026-05-11T22:10:02.249721+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-05-23T11:22:12.496658+00:00",
+    "last_used_at": "2026-05-23T11:52:53.722296+00:00",
+    "last_viewed_at": "2026-05-23T11:52:53.720928+00:00",
+    "patch_count": 32,
+    "pinned": false,
+    "state": "active",
+    "use_count": 30,
+    "view_count": 30
+  }
+}
