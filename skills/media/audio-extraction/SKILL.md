@@ -159,6 +159,10 @@ model: "{args.model}"
 """
 ```
 
+## Related: Video Generation Pipeline
+
+After transcribing lecture/educational videos, you may want to generate AI video content. See the `local-video-generation` skill for WanGP/Wan2GP setup on Apple Silicon — covers installation, Gradio patching for macOS SSL issues, MPS compatibility, and connecting from Open Generative AI or other UIs.
+
 ## Next Step: Transcription with MLX Whisper
 
 After extracting WAV files, transcribe them locally with `mlx-whisper` (Apple Silicon)

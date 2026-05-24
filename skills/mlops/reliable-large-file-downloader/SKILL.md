@@ -12,7 +12,7 @@ platforms: [linux, macos]
 
 For environments with unstable or restricted network (China, intermittent WiFi, throttled connections). Prioritizes **resumability** and **automatic retry** over simplicity.
 
-**USER PREFERENCE:** Always default to resumable download methods (aria2c `-c`, snapshot_download, etc.) — never use non-resumable methods for files >100MB. When a download is interrupted, it MUST be resumable without starting from scratch.
+**USER MANDATE:** ALWAYS use resumable download methods (aria2c `-c`, `snapshot_download`, etc.) for EVERY file download, regardless of size. Never use non-resumable methods (`curl | python3`, bare `wget`, `pip install` of large packages) without a retry/resume wrapper. This is the user's explicit directive — every download must be recoverable after interruption.
 
 ## Tool Selection
 
@@ -25,9 +25,29 @@ For environments with unstable or restricted network (China, intermittent WiFi, 
 | **uv sync** | Python dependency resolution | ❌ no resume | ❌ |
 | **wget -c** | Fallback | ✅ partial | ❌ |
 
-## CRITICAL: Always Run Long Downloads in Background
+## CRITICAL: Always Run Long Downloads in Background (or Delegate)
 
-**USER MANDATE:** Long downloads and large installations MUST run in the background (`background=true`) or be delegated to a subagent. Never block the chat with a foreground download — the user needs the agent responsive at all times.
+**USER MANDATE:** Long downloads and large installations MUST NOT block the chat. The user needs me responsive at all times.
+
+**Proactive status updates:** The user WILL ask "качает?" if progress is unclear. Don't wait for them — after starting a background download, check progress at reasonable intervals (every 30-60s for the first few minutes, then every 2-5 min) and report succinctly: "качает — 35%, 2.1/6.0 ГБ, осталось ~4 мин" or "висит — проверяю лог". If output stays empty for >60s, investigate the npm log or process log. Use `process(action="poll", session_id="...")` to check.
+
+Three strategies, in preference order:
+
+1. **Background terminal** — `terminal(..., background=true, notify_on_complete=true)`. Agent stays available while the download runs.
+2. **Subagent delegation** — `delegate_task(goal="Download ...", toolsets=["terminal"])`. Fires off a separate agent process. Use this when the download involves multiple steps (check source speed, choose mirror, aria2c, verify integrity) or could take >15 minutes.
+3. **Cronjob watchdog** — For hours-long downloads that need monitoring across sessions (see Section 4 below).
+
+**Never** do this:
+```bash
+# WRONG — blocks the user's chat for minutes
+terminal(command="npm install ...")  # DON'T
+terminal(command="aria2c huge-model.safetensors ...")  # DON'T
+
+# RIGHT
+terminal(..., background=true)
+# OR
+delegate_task(goal="Download model XYZ from HF-Mirror using aria2c")
+```
 
 Do this:
 ```bash
@@ -315,6 +335,7 @@ Many tools (e.g., ACE-Step model_downloader) auto-detect network and fallback. W
   ```
   Verify with `find checkpoints -name "*.safetensors"` that every model dir has its weights file.
 
+- **npm/pip registries fail with ETIMEDOUT from China or behind local VPN**: Standard registries (`registry.npmjs.org`, `pypi.org`) are often unreachable from mainland China. Even after switching to mirrors, npm can hang with ETIMEDOUT due to corrupted cache from previous failed installs or VPN interference. Diagnosis: `tail -5 ~/.npm/_logs/$(ls -t ~/.npm/_logs/ | head -1)` shows ETIMEDOUT while `curl` works. **Fix priority:** (1) Clean cache and use npmmirror directly WITHOUT proxy. (2) If that fails, use two-phase proxy warmup (metadata via proxy → delete proxy → tarballs direct). **CRITICAL:** `npm config set proxy` causes `EIDLETIMEOUT` on `cdn.npmmirror.com:443` — proxy must NOT be active during tarball downloads. On Macs with Shadowrocket/VPN, `scutil --proxy` shows HTTPProxy at 127.0.0.1:1082 but npm ignores system proxy — needs explicit `HTTP_PROXY`/`HTTPS_PROXY` env vars or `npm config set proxy`. See `references/package-managers-china.md` for full workflow. **DO NOT retry the same registry** — clean cache and switch registries.
 - **Safetensors integrity verification (CRITICAL)**: A `.safetensors` file can exist on disk but be corrupted (partial download, interrupted write). Tools that only check file existence (like ACE-Step's `_contains_model_weights()`) will report the model as present while the file is unreadable. ALWAYS verify integrity after download, especially when files were moved from `._____temp/`:
   ```bash
   python3 -c "
@@ -332,3 +353,5 @@ Many tools (e.g., ACE-Step model_downloader) auto-detect network and fallback. W
 ## Related Files
 
 - `references/ace-step-download-example.md` — Session-specific example of ACE-Step model download workflow with ModelScope
+- `references/package-managers-china.md` — npm/pip/uv mirror configuration for China (ETIMEDOUT workarounds)
+- `references/mlx-model-download-china.md` — MLX model download in China for Electron/MLX apps (Gemma Chat, etc.)
