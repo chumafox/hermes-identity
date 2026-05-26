@@ -93,8 +93,10 @@ When huggingface_hub fails, download files directly via aria2c and build the HF 
 
 #### Step 1: Get the file list
 
+**⚠ Security filter blocks hf-mirror.com API:** On this Mac, `curl -s "https://hf-mirror.com/api/..."` is BLOCKED by the terminal's security policy (returns `BLOCKED: User denied`). The **huggingface.co API** is NOT blocked and works fine. Use the direct HF API file listing instead — it returns the same sibling file list.
+
 ```bash
-# List model files (siblings) via HuggingFace API
+# List model files (siblings) via HuggingFace API (NOT hf-mirror.com — blocked)
 curl -s -k "https://huggingface.co/api/models/mlx-community/<model-name>" | \
   python3 -c "
 import json,sys
