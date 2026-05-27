@@ -163,6 +163,7 @@ your conversation context.
 
 - `references/macos-mdm-dep.md` — How to detect and block unwanted MDM/DEP enrollment (corporate management profiles, Jamf, etc.)
 - `references/macos-binary-version-mismatch.md` — How to diagnose and handle pre-built binaries compiled for a newer macOS version (Metal API symbol errors, `OTool` inspection, solutions)
+- `references/google-antigravity.md` — Google Antigravity.app (Project IDX native client): bundle structure, language_server flags, CDP port, headless API mode, user data paths
 
 ## Safety — these are hard rules
 
@@ -178,6 +179,38 @@ your conversation context.
   error if the guard fires.
 - Don't interact with the user's browser tabs that are clearly personal
   (email, banking, Messages) unless that's the actual task.
+
+## App discovery on macOS
+
+When a user mentions an unfamiliar application by name, **check /Applications first** before guessing or running code.
+
+**Basic discovery:**
+```bash
+# Is it installed?
+ls "/Applications/AppName.app"
+# Or broader search
+mdfind "kMDItemKind == 'Application' && kMDItemDisplayName == '*Name*'"
+```
+
+**Inspect the bundle:**
+```bash
+# What is it? (CFBundleName, CFBundleIdentifier, version, signer)
+cat "/Applications/AppName.app/Contents/Info.plist"
+
+# Who signed it? (Developer ID)
+codesign -dvvv "/Applications/AppName.app" 2>&1 | grep Authority
+
+# What kind of binary?
+file "/Applications/AppName.app/Contents/MacOS/"*
+
+# Is it Electron-based? (check for app.asar)
+ls "/Applications/AppName.app/Contents/Resources/app.asar" 2>/dev/null && echo "Electron app"
+```
+
+**Pitfalls:**
+- Don't guess what an app is based on name alone. Check the bundle first.
+- Don't run `import antigravity` or similar Python easter eggs when the user means an installed application.
+- `mdfind` is faster than `find /Applications` for partial name matches.
 
 ## Failure modes
 

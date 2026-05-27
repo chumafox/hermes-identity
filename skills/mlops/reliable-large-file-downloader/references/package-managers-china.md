@@ -2,7 +2,30 @@
 
 Standard registries (npm, PyPI, crates.io) are often unreachable or get ETIMEDOUT from China. Always configure mirrors before running install commands.
 
-## npm
+## npm — postinstall script workarounds
+
+Several npm packages have postinstall scripts that download large binaries from CDNs blocked in China:
+
+| Package | Downloads | Workaround |
+|---------|-----------|------------|
+| **cypress** | ~100MB binary (also Chromium) | `--ignore-scripts` — not needed for build |
+| **onnxruntime-node** | native binary (many MB) | `--ignore-scripts` — not needed for build |
+| **esbuild** | native binary (~8MB) | **Required** for vite; run manually after install |
+
+**Safe approach:**
+
+```bash
+npm install --ignore-scripts --registry=https://registry.npmmirror.com
+# Then run only what's needed
+node node_modules/esbuild/install.js
+node node_modules/vite/node_modules/esbuild/install.js
+```
+
+The esbuild postinstall is essential — without it, vite's `.bin` symlinks won't work and `vite build` fails with "vite: command not found". cypress and onnxruntime-node can be safely ignored if you're only building, not testing or running inference.
+
+After `npm install --ignore-scripts`, the `.bin/` directory will be empty. Running esbuild postinstall regenerates the symlinks.
+
+## npm — basic configuration
 
 Default registry `https://registry.npmjs.org` frequently fails with ETIMEDOUT on all packages in China. Use npmmirror:
 

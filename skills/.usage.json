@@ -64,6 +64,19 @@
     "use_count": 3,
     "view_count": 3
   },
+  "open-webui": {
+    "archived_at": null,
+    "created_at": "2026-05-27T08:55:38.860754+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-05-27T08:56:45.501727+00:00",
+    "last_used_at": "2026-05-27T08:56:33.828194+00:00",
+    "last_viewed_at": "2026-05-27T08:56:33.826607+00:00",
+    "patch_count": 2,
+    "pinned": false,
+    "state": "active",
+    "use_count": 2,
+    "view_count": 2
+  },
   "pentest-workflow-toolkit": {
     "archived_at": null,
     "created_at": "2026-05-14T01:09:18.981155+00:00",
@@ -81,13 +94,13 @@
     "archived_at": null,
     "created_at": "2026-05-11T22:10:02.249721+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-05-26T06:50:16.922629+00:00",
-    "last_used_at": "2026-05-26T06:50:21.011555+00:00",
-    "last_viewed_at": "2026-05-26T06:50:21.009389+00:00",
-    "patch_count": 57,
+    "last_patched_at": "2026-05-27T08:56:42.772210+00:00",
+    "last_used_at": "2026-05-27T08:56:34.652884+00:00",
+    "last_viewed_at": "2026-05-27T08:56:34.651405+00:00",
+    "patch_count": 61,
     "pinned": false,
     "state": "active",
-    "use_count": 55,
-    "view_count": 55
+    "use_count": 62,
+    "view_count": 62
   }
 }

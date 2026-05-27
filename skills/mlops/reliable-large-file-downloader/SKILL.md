@@ -350,8 +350,53 @@ Many tools (e.g., ACE-Step model_downloader) auto-detect network and fallback. W
   ```
   **Error signature of corrupted file**: `SafetensorError: Error while deserializing header: incomplete metadata, file not fully covered` — the file was a partial download whose metadata header never completed. Fix: delete the corrupted file and re-download with `--force`.
 
+## Python Project Installation from Source (China)
+
+When installing Python projects from source (`uv pip install -e .` or `pip install -e .`), the editable install pulls in ALL dependencies simultaneously — including heavy packages like torch (83MB), opencv (44MB), pyarrow (29MB), onnxruntime (16MB). From China's restricted network, this often times out (>5 min) after downloading only a fraction of the 200+ dependencies.
+
+**Preferred approach — split into deps + package:**
+
+```bash
+# 1. Create venv
+uv venv --python 3.12
+
+# 2. Install dependencies from requirements.txt first
+#    (smaller batches, more resilient)
+source .venv/bin/activate
+uv pip install -r backend/requirements.txt
+
+# 3. Install the package itself WITHOUT re-downloading deps
+uv pip install -e . --no-deps
+
+# 4. Verify import works
+python -c "import open_webui; print(open_webui.__file__)"
+```
+
+**Fallback if --no-deps install fails (e.g., hatchling build hangs):**
+
+```bash
+# Instead of step 3, symlink the package into site-packages
+cd .venv/lib/python3.12/site-packages/
+ln -sf /absolute/path/to/project/backend/package_name package_name
+```
+
+This skips the build step entirely. Works for projects where the module structure maps straightforward to the source tree.
+
+**Why not `uv pip install -e .` directly?**
+- `uv` resolves all 260 packages upfront (22s), then downloads them all — if any large package times out, the entire install fails with no partial cache
+- `requirements.txt` is often more conservative about version constraints and may skip optional heavy dependencies
+- Even successful downloads of torch from Chinese mirrors can take 3-8 minutes — the aggregate timeout of 200+ packages is unpredictable
+
+For the uv HTTP timeout (relevant for pip install of large single wheels):
+```bash
+UV_HTTP_TIMEOUT=300 uv pip install -r requirements.txt
+```
+
+See `references/python-project-install-china.md` for a detailed example with Open WebUI.
+
 ## Related Files
 
 - `references/ace-step-download-example.md` — Session-specific example of ACE-Step model download workflow with ModelScope
 - `references/package-managers-china.md` — npm/pip/uv mirror configuration for China (ETIMEDOUT workarounds)
 - `references/mlx-model-download-china.md` — MLX model download in China for Electron/MLX apps (Gemma Chat, etc.)
+- `references/python-project-install-china.md` — Python project installation from source in China (Open WebUI example)
