@@ -159,12 +159,6 @@ PNG bytes; write them out with `write_file` or the terminal (`base64 -d`).
 On CLI, you can just describe what you see — the screenshot data stays in
 your conversation context.
 
-## Related References
-
-- `references/macos-mdm-dep.md` — How to detect and block unwanted MDM/DEP enrollment (corporate management profiles, Jamf, etc.)
-- `references/macos-binary-version-mismatch.md` — How to diagnose and handle pre-built binaries compiled for a newer macOS version (Metal API symbol errors, `OTool` inspection, solutions)
-- `references/google-antigravity.md` — Google Antigravity.app (Project IDX native client): bundle structure, language_server flags, CDP port, headless API mode, user data paths
-
 ## Safety — these are hard rules
 
 - **Never click permission dialogs, password prompts, payment UI, 2FA
@@ -180,86 +174,79 @@ your conversation context.
 - Don't interact with the user's browser tabs that are clearly personal
   (email, banking, Messages) unless that's the actual task.
 
-## App discovery on macOS
+## Permission requirements
 
-When a user mentions an unfamiliar application by name, **check /Applications first** before guessing or running code.
+cua-driver needs TWO permissions in System Settings:
+1. **Accessibility** — for sending keystrokes and clicks
+2. **Screen Recording** — for screenshot captures
 
-**Basic discovery:**
-```bash
-# Is it installed?
-ls "/Applications/AppName.app"
-# Or broader search
-mdfind "kMDItemKind == 'Application' && kMDItemDisplayName == '*Name*'"
-```
+Without Screen Recording:
+- `list_windows`, `list_apps`, `click`, `type_text` work ✅
+- `screenshot` returns a 58-byte empty PNG ❌
 
-**Inspect the bundle:**
-```bash
-# What is it? (CFBundleName, CFBundleIdentifier, version, signer)
-cat "/Applications/AppName.app/Contents/Info.plist"
-
-# Who signed it? (Developer ID)
-codesign -dvvv "/Applications/AppName.app" 2>&1 | grep Authority
-
-# What kind of binary?
-file "/Applications/AppName.app/Contents/MacOS/"*
-
-# Is it Electron-based? (check for app.asar)
-ls "/Applications/AppName.app/Contents/Resources/app.asar" 2>/dev/null && echo "Electron app"
-```
-
-**Pitfalls:**
-- Don't guess what an app is based on name alone. Check the bundle first.
-- Don't run `import antigravity` or similar Python easter eggs when the user means an installed application.
-- `mdfind` is faster than `find /Applications` for partial name matches.
+Fix: System Settings → Privacy & Security → Screen Recording → add Terminal (or Hermes Agent app).
 
 ## Failure modes
 
-- **"cua-driver not installed"** — Run `hermes tools` and enable Computer
-  Use; the setup will install cua-driver via its upstream script. Requires
+- **"cua-driver not installed"** — Run `hermes computer-use install`, not
+  `hermes tools` (that subcommand requires an interactive terminal). Requires
   macOS + Accessibility + Screen Recording permissions.
+
+- **Screenshot returns 58-byte ASCII file** — cua-driver lacks Screen Recording
+  permission. Fix: System Settings > Privacy & Security > Screen Recording >
+  add `cua-driver` (or Terminal if running from there).
+
+- **`Failed to parse JSON arguments`** — cua-driver expects JSON via stdin,
+  not key=value flags. Use: `printf '{"window_id":12345}' | cua-driver screenshot`.
+  The output may contain a "✅ Window screenshot" prefix line; strip with
+  `grep -v "^✅"` before piping to `base64 -d`.
+
+- **`list_apps` returns `Unknown tool: list-apps`** — cua-driver subcommands use
+  underscores, not hyphens. Run `cua-driver list_apps` (with underscore).
+
 - **Element index stale** — SOM indices come from the last `capture` call.
   If the UI shifted (new tab opened, dialog appeared), re-capture before
   clicking.
+
 - **Click had no effect** — Re-capture and verify. Sometimes a modal that
   wasn't visible before is now blocking input. Dismiss it (usually
   `escape` or click the close button) before retrying.
+
 - **"blocked pattern in type text"** — You tried to `type` a shell command
   that matches the dangerous-pattern block list (`curl ... | bash`,
   `sudo rm -rf`, etc.). Break the command up or reconsider.
 
-### macOS File Sharing & Cross-Mac Transfer
+## WeChat-specific usage
 
-**Thunderbolt/USB Direct Connection (Apple Direct Connect)**
-- Apple's proprietary LAN over Thunderbolt uses `172.20.x.x` subnet (not 192.168.* or 10.*)
-- To discover connected Macs: `networksetup -listallhardwareports` then check routing table
-- To share folder via SMB: `sudo systemsetup -setfilesharing ON` then scan with `smbutil list <hostname>`
+WeChat for macOS does not expose chat content via Apple Accessibility API.
+AppleScript can send keystrokes (activate + type + return) but cannot read
+messages. For full WeChat automation:
 
-**Alternative file transfer methods when SSH fails:**
-1. **Python HTTP server** (most reliable fallback): `python3 /Users/admin/.hermes/scripts/file-transfer-server.py <port>`
-   - Connect from other Mac: `open http://IP_ADDRESS:<PORT>/` 
-   - Or rsync via SSH after key setup
-2. **AirDrop** for GUI file transfer (if both Macs have it enabled)
-3. **SSH key exchange pattern**: 
-   ```bash
-   ssh-keyscan <remote_ip> > /tmp/keys.pub  # on target Mac
-   cat /tmp/keys.pub >> ~/.ssh/authorized_keys  # paste key onto target Mac
-   chmod 600 ~/.ssh/authorized_keys
+1. **Read: use `cua-driver screenshot`** on the WeChat window (window_id from
+   `list_windows`). Requires Screen Recording permission.
+
+2. **Write: use AppleScript** as a low-tech fallback:
+   ```
+   osascript -e '
+   tell application "WeChat" to activate
+   delay 0.3
+   tell application "System Events"
+       keystroke "message text"
+       keystroke return
+   end tell'
    ```
 
-**SMB connection for cross-Mac transfer:**
-```bash
-# Scan for SMB shares on network segment
-smbutil list <hostname> or smbutil server-info <IP>
+3. **Windows VM + wcf** (ComWeChatRobot) is the most reliable approach for
+   bidirectional API access. WeChat on Windows supports in-memory injection
+   via wcf (WeChatChatroomFramework) exposing HTTP/gRPC endpoints.
 
-# Connect to share (requires credentials)
-smbclient //admin-admin.local/ShareName -U admin -c "ls"
+## When NOT to use `computer_use`
 
-# Copy files via rsync over SMB
-rsync -avz admin@<IP>:/path/to/share/ ./local/ --port=445
-```
-
-**Discovery commands for Thunderbolt connections:**
-- `networksetup -listallhardwareports | grep -i "Thunderbolt"`
-- Check ARP table: `arp -na` for local MAC addresses
-- Scavenge DNS/Bonjour: `scutil --dns | grep -A2 "name"`
-- Apple Direct Connect range: 172.20.x.x (look for this in `netstat -nr` output)
+- Web automation you can do via `browser_*` tools — those use a real
+  headless Chromium and are more reliable than driving the user's GUI
+  browser. Reach for `computer_use` specifically when the task needs the
+  user's actual Mac apps (native Mail, Messages, Finder, Figma, Logic,
+  games, anything non-web).
+- File edits — use terminal or code execution tools, not `type` into
+  an editor window.
+- Shell commands — use `terminal`, not `type` into Terminal.app.

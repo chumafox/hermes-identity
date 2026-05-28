@@ -83,42 +83,8 @@ memo notes -ex                    # Export to HTML/Markdown
 - Interactive prompts require terminal access (use pty=true if needed)
 - macOS only — requires Apple Notes.app
 
-## Fallback When CLI is Unavailable
-
-### Issue Reference
-
-See `references/memo-cli-unavailable.md` for detailed troubleshooting when CLI is missing.
-
-If `memo` command fails (command not found), use **GUI automation** via the `macos-computer-use` skill:
-
-```
-computer_use(action="focus_app", app="com.apple.Notes")  # Focus Notes.app
-computer_use(action="click", element=N)                 # Click target button  
-computer_use(action="type", text="...")                # Type into active field
-```
-
-### Terminal Workarounds (when CLI missing)
-```bash
-# Launch Notes.app
-open -a "Notes"
-
-# Search notes via AppleScript
-osascript -e 'tell application "Finder" to GET contents of every note item'
-
-# Or use Notes scriptable app directly
-osascript -e 'tell application "Notes" to activate'
-```
-
-### GUI Workflow When CLI Missing
-1. Launch Notes via Spotlight: `command+space`, type "Notes", enter
-2. Use `computer_use` to interact with the window
-3. Creating: Click New → type title (key="return") → type content (auto-saves)
-4. Searching: Click menu Find, or use keyboard shortcut
-
 ## Rules
 
 1. Prefer Apple Notes when user wants cross-device sync (iPhone/iPad/Mac)
 2. Use the `memory` tool for agent-internal notes that don't need to sync
 3. Use the `obsidian` skill for Markdown-native knowledge management
-4. If memo CLI unavailable, fallback to macos-computer-use for GUI automation
-5. Install memo CLI if available: `brew tap antoniorodr/memo && brew install memo`

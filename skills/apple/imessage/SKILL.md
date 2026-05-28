@@ -9,19 +9,35 @@ metadata:
   hermes:
     tags: [iMessage, SMS, messaging, macOS, Apple]
 prerequisites:
-  commands: [imsg]
+  commands: []
 ---
 
 # iMessage
 
-Use `imsg` to read and send iMessage/SMS via macOS Messages.app.
+Send iMessage/SMS via macOS Messages.app.
 
 ## Prerequisites
 
-- **macOS** with Messages.app signed in
-- Install: `brew install steipete/tap/imsg`
-- Grant Full Disk Access for terminal (System Settings → Privacy → Full Disk Access)
-- Grant Automation permission for Messages.app when prompted
+- **macOS** with Messages.app signed in (any Apple ID)
+
+## Primary Method — `imsg` CLI
+
+Install: `brew install steipete/tap/imsg`  
+Grant Full Disk Access for terminal, then Automation permission when prompted.
+
+## Fallback — AppleScript (no brew needed)
+
+When brew is unavailable or slow (e.g. China WiFi), use `osascript` directly:
+
+```bash
+# Send
+osascript -e 'tell application "Messages" to send "text" to buddy "user@me.com" of (service 1 whose service type is iMessage)'
+
+# Send after delay (background)
+# (sleep 300 && osascript -e 'tell application "Messages" to send "Сейчас $(date)" to buddy "user@me.com" of (service 1 whose service type is iMessage)') &
+```
+
+AppleScript supports iMessage only (not SMS). For SMS (green bubble), use `sms` service type or `imsg send --service sms`.
 
 ## When to Use
 
@@ -36,11 +52,15 @@ Use `imsg` to read and send iMessage/SMS via macOS Messages.app.
 - Group chat management (adding/removing members) → not supported
 - Bulk/mass messaging → always confirm with user first
 
-## Quick Reference
+### Quick Reference
 
-### List Chats (Contacts)
+**Fallback (no brew): AppleScript** — use when `imsg` not installed or brew times out:
+```bash
+osascript -e 'tell application "Messages" to send "text" to buddy "user@me.com" of (service 1 whose service type is iMessage)'
+```
+For delayed sends: `(sleep 300 && osascript -e 'tell application "Messages" ...') &`
 
-Use this command to list available chats/contacts. The output is JSON and contains display names and IDs, which can be used for subsequent actions like viewing history or sending messages.
+### List Chats
 
 ```bash
 imsg chats --limit 10 --json

@@ -1,7 +1,7 @@
 ---
 name: github-auth
 description: "GitHub auth setup: HTTPS tokens, SSH keys, gh CLI login."
-version: 1.1.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 platforms: [linux, macos, windows]
@@ -140,6 +140,44 @@ ssh -T git@github.com
 # Expected: "Hi <username>! You've successfully authenticated..."
 ```
 
+### Option C: SSH via Port 443 (Firewall / China / Restricted Networks)
+
+Standard SSH port 22 is often blocked by corporate firewalls, VPN interceptors, or national filtering. GitHub provides ssh.github.com on port 443 as a reliable workaround.
+
+**Step 1: Create dedicated SSH key (optional but recommended)**
+
+```bash
+ssh-keygen -t ed25519 -C "hermes-agent" -f ~/.ssh/id_ed25519_github -N ""
+cat ~/.ssh/id_ed25519_github.pub
+```
+
+Add the public key at **https://github.com/settings/keys**.
+
+**Step 2: Configure ~/.ssh/config**
+
+```
+Host github.com
+  HostName ssh.github.com
+  Port 443
+  User git
+  IdentityFile ~/.ssh/id_ed25519_github
+  StrictHostKeyChecking no
+```
+
+All git@github.com URLs now transparently route through port 443 — no URL rewriting needed.
+
+**Step 3: Verify**
+
+```bash
+ssh -T git@github.com
+# Expected: "Hi <username>! You've successfully authenticated, but GitHub does not provide shell access."
+# Note: exit code 1 is SUCCESS — GitHub simply doesn't grant shell
+```
+
+**Common issues:**
+- `Connection closed by 198.18.x.x` → VPN/proxy intercepting port 22. Port 443 should bypass it; if not, use HTTPS token auth instead.
+- `Permission denied (publickey)` → key not registered on GitHub, or IdentityFile points to the wrong key.
+
 **Step 4: Configure git to use SSH for GitHub**
 
 ```bash
@@ -169,7 +207,27 @@ gh auth login
 # Authenticate via browser
 ```
 
+**⚠ Requires a TTY.** `gh auth login` without `--with-token` uses the device code flow (prints a URL + one-time code that the user opens in a browser). This REQUIRES a terminal TTY:
+- **Fails silently over SSH** — no code is printed, command appears to hang
+- **Fails in background mode** (`terminal(background=true)`) — no output at all, command hangs forever until killed
+- **Fails when command is interrupted by timeout** — the device code expires before the user can enter it
+- **Use `--with-token`** instead for headless/SSH/automated setups
+
+### SSH-Based Login (key already on GitHub)
+
+If the user's SSH public key is already registered on GitHub, avoid the TTY requirement entirely:
+
+```bash
+gh auth login --git-protocol ssh --skip-ssh-key
+```
+
+- `--git-protocol ssh` configures git remotes as SSH URLs
+- `--skip-ssh-key` skips uploading a key (already on GitHub)
+- Also requires a TTY/device code flow (same limitation), but is useful when you DO have a TTY and want SSH-based setup
+
 ### Token-Based Login (Headless / SSH Servers)
+
+**Preferred method for non-interactive/SSH setups.** Create a personal access token at https://github.com/settings/tokens first, then:
 
 ```bash
 echo "<THEIR_TOKEN>" | gh auth login --with-token
@@ -234,6 +292,11 @@ fi
 
 ---
 
+## Reference Files
+
+- **`references/ssh-port443-china-config.md`** — SSH config template for GitHub via port 443 (bypasses China/VPN port-22 blocking), key naming conventions, multi-machine key copy
+- **`references/identity-sync-across-machines.md`** — Full workflow for sharing AGENTS.md, skills, and identity across multiple Hermes machines via a shared git repo + cron/launchd auto-sync
+
 ## Troubleshooting
 
 | Problem | Solution |
@@ -241,7 +304,7 @@ fi
 | `git push` asks for password | GitHub disabled password auth. Use a personal access token as the password, or switch to SSH |
 | `remote: Permission to X denied` | Token may lack `repo` scope — regenerate with correct scopes |
 | `fatal: Authentication failed` | Cached credentials may be stale — run `git credential reject` then re-authenticate |
-| `ssh: connect to host github.com port 22: Connection refused` | Try SSH over HTTPS port: add `Host github.com` with `Port 443` and `Hostname ssh.github.com` to `~/.ssh/config` |
+| `ssh: connect to host github.com port 22: Connection refused` | Try SSH via port 443 — see **Option C: SSH via Port 443** above |\n| `ssh: Connection closed by 198.18.x.x` | VPN/proxy intercepting port 22. Use Option C (port 443 via ssh.github.com) or HTTPS token auth |\n| `ssh: Permission denied (publickey)` | Key not registered on GitHub, or ssh-agent serving the wrong key. Verify with `ssh -T -i ~/.ssh/<key> git@github.com` |
 | Credentials not persisting | Check `git config --global credential.helper` — must be `store` or `cache` |
 | Multiple GitHub accounts | Use SSH with different keys per host alias in `~/.ssh/config`, or per-repo credential URLs |
 | `gh: command not found` + no sudo | Use git-only Method 1 above — no installation needed |
