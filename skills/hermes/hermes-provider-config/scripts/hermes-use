@@ -1,0 +1,51 @@
+#!/bin/bash
+# Hermes provider switcher — part of hermes-provider-config skill
+# Usage: hermes-use <provider> [model]
+# Installed to ~/.hermes/scripts/hermes-use, also as ~/.zshrc function
+
+PROVIDER="$1"
+MODEL="$2"
+
+case "$PROVIDER" in
+  deepseek)
+    hermes config set model.provider deepseek
+    hermes config set model.default "${MODEL:-deepseek-v4-flash}"
+    echo "→ DeepSeek: ${MODEL:-deepseek-v4-flash}"
+    ;;
+  kimi)
+    hermes config set model.provider kimi
+    hermes config set model.default "${MODEL:-kimi-k2.6}"
+    echo "→ Kimi: ${MODEL:-kimi-k2.6}"
+    ;;
+  nous)
+    hermes config set model.provider nous
+    hermes config set model.default "${MODEL:-stepfun/step-3.7-flash:free}"
+    echo "→ Nous: ${MODEL:-stepfun/step-3.7-flash:free}"
+    ;;
+  bailian|alibaba)
+    # Использует built-in alibaba-cn провайдер (из /model picker)
+    # Ключ: DASHSCOPE_API_KEY из .env
+    hermes config set model.provider alibaba-cn
+    hermes config set model.default "${MODEL:-qwen3.6-plus}"
+    echo "→ Bailian (alibaba-cn): ${MODEL:-qwen3.6-plus}"
+    echo "  Free quota: 165 models × 1M tokens"
+    echo "  Paid: deepseek-v4, kimi-k2.5, MiniMax-M2.5"
+    ;;
+  list)
+    echo "Available providers:"
+    echo "  deepseek  — deepseek-v4-flash (default)"
+    echo "  kimi      — kimi-k2.6 (fallback 1)"
+    echo "  nous      — stepfun/step-3.7-flash:free (fallback 2)"
+    echo "  bailian   — qwen3.6-plus via alibaba-cn (free quota 1M)"
+    echo ""
+    echo "Usage: hermes-use <provider> [model]"
+    echo "  hermes-use deepseek"
+    echo "  hermes-use bailian              # qwen3.6-plus"
+    echo "  hermes-use bailian qwen3.7-plus"
+    echo "  hermes-use list"
+    ;;
+  *)
+    echo "Unknown provider: $PROVIDER"
+    echo "Use: hermes-use list"
+    ;;
+esac

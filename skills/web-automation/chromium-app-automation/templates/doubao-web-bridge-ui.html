@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CDP Bridge Chat</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0d1117; color: #c9d1d9; height: 100vh; display: flex;
+    flex-direction: column; max-width: 550px;
+  }
+  .header {
+    padding: 12px 20px; background: #161b22; border-bottom: 1px solid #30363d;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .header h1 { font-size: 16px; font-weight: 600; color: #58a6ff; }
+  .header .status-line { font-size: 12px; color: #8b949e; }
+  .header .status-line .dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    margin-right: 6px; vertical-align: middle;
+  }
+  .dot.ok { background: #3fb950; }
+  .dot.busy { background: #d29922; animation: pulse 1s infinite; }
+  .dot.err { background: #f85149; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .voice-toggle {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 20px; border: 1px solid #30363d;
+    background: #21262d; cursor: pointer; font-size: 13px; color: #8b949e;
+    transition: all 0.2s; user-select: none;
+  }
+  .voice-toggle:hover { border-color: #58a6ff; }
+  .voice-toggle.active {
+    background: #0d4429; border-color: #3fb950; color: #3fb950;
+  }
+  .voice-toggle .mic-icon { font-size: 16px; }
+  .voice-toggle .key-hint { font-size: 10px; background: #30363d; padding: 1px 5px; border-radius: 3px; color: #8b949e; }
+  .chat {
+    flex: 1; overflow-y: auto; padding: 16px 20px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .chat .empty-state {
+    text-align: center; color: #484f58; margin-top: 40px; font-size: 14px; line-height: 1.6;
+  }
+  .chat .empty-state .emoji { font-size: 32px; margin-bottom: 8px; }
+  .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px;
+         font-size: 14px; line-height: 1.5; word-break: break-word; }
+  .msg.user {
+    align-self: flex-end; background: #1f6feb; color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .msg.bot {
+    align-self: flex-start; background: #21262d; color: #c9d1d9;
+    border-bottom-left-radius: 4px; border: 1px solid #30363d;
+  }
+  .msg.system {
+    align-self: center; background: transparent; color: #484f58;
+    font-size: 12px; padding: 4px 10px;
+  }
+  .status-bar {
+    padding: 6px 20px; background: #161b22; border-top: 1px solid #30363d;
+    font-size: 12px; color: #8b949e; min-height: 28px;
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+  }
+  .status-bar .spinner { display: none; }
+  .status-bar.busy .spinner {
+    display: inline-block; width: 12px; height: 12px;
+    border: 2px solid #30363d; border-top-color: #58a6ff;
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .input-area {
+    padding: 12px 20px; background: #161b22; border-top: 1px solid #30363d;
+    flex-shrink: 0;
+  }
+  .input-area form {
+    display: flex; gap: 8px;
+  }
+  .input-area input {
+    flex: 1; padding: 10px 14px; border-radius: 8px; border: 1px solid #30363d;
+    background: #0d1117; color: #c9d1d9; font-size: 14px; outline: none;
+  }
+  .input-area input:focus { border-color: #58a6ff; }
+  .input-area input::placeholder { color: #484f58; }
+  .input-area button {
+    padding: 10px 20px; border-radius: 8px; border: none;
+    background: #238636; color: #fff; font-size: 14px; cursor: pointer;
+    font-weight: 500; transition: background 0.2s;
+  }
+  .input-area button:hover { background: #2ea043; }
+  .input-area button:disabled { background: #21262d; color: #484f58; cursor: not-allowed; }
+  .chat::-webkit-scrollbar { width: 6px; }
+  .chat::-webkit-scrollbar-track { background: transparent; }
+  .chat::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>CDP Bridge Chat</h1>
+    <div class="status-line">
+      <span class="dot ok" id="statusDot"></span>
+      <span id="statusText">Подключение...</span>
+    </div>
+  </div>
+  <div class="voice-toggle" id="voiceToggle" onclick="toggleVoice()">
+    <span class="mic-icon">🎤</span>
+    <span>Голос</span>
+    <span class="key-hint">Ctrl+V</span>
+  </div>
+</div>
+
+<div class="chat" id="chat">
+  <div class="empty-state" id="emptyState">
+    <div class="emoji">💬</div>
+    <div>Напиши сообщение.<br>Ответ придёт переведённым.</div>
+  </div>
+</div>
+
+<div class="status-bar" id="statusBar">
+  <span class="spinner"></span>
+  <span id="statusMsg">Ожидание ввода...</span>
+</div>
+
+<div class="input-area">
+  <form id="msgForm">
+    <input type="text" id="input" placeholder="Напиши сообщение..." autofocus>
+    <button type="submit" id="sendBtn">→</button>
+  </form>
+</div>
+
+<script>
+const wsUrl = `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/ws`;
+let ws = null, busy = false, voiceActive = false;
+
+function connect() {
+  ws = new WebSocket(wsUrl);
+  ws.onopen = () => setStatus('ok', 'Готов.');
+  ws.onclose = () => { setStatus('err', 'Переподключение...'); setTimeout(connect, 2000); };
+  ws.onmessage = (e) => {
+    try { handleMsg(JSON.parse(e.data)); } catch(_) {}
+  };
+}
+
+function handleMsg(d) {
+  switch (d.type) {
+    case 'status': setStatus('busy', d.text); break;
+    case 'message':
+      addMessage(d.role, d.text);
+      if (d.role === 'bot') setBusy(false);
+      break;
+    case 'voice_status':
+      voiceActive = d.active;
+      document.getElementById('voiceToggle').classList.toggle('active', voiceActive);
+      break;
+    case 'error':
+      addMessage('system', '⚠ ' + d.text);
+      setBusy(false);
+      break;
+  }
+}
+
+function addMessage(role, text) {
+  const chat = document.getElementById('chat');
+  const empty = document.getElementById('emptyState');
+  if (empty) empty.remove();
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function setStatus(type, text) {
+  document.getElementById('statusDot').className = 'dot ' + type;
+  document.getElementById('statusMsg').textContent = text;
+  document.getElementById('statusBar').className = 'status-bar' + (type === 'busy' ? ' busy' : '');
+}
+
+function setBusy(b) {
+  busy = b;
+  document.getElementById('sendBtn').disabled = b;
+  // Input stays enabled so dictation tools (Handy, macOS) keep working
+}
+
+function sendMessage() {
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  if (!text || busy || !ws || ws.readyState !== WebSocket.OPEN) return;
+  input.value = '';
+  setBusy(true);
+  ws.send(JSON.stringify({type: 'chat', text}));
+}
+
+// Form submit — compatible with dictation tools (Handy, macOS built-in)
+document.getElementById('msgForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  sendMessage();
+});
+
+function toggleVoice() {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  ws.send(JSON.stringify({type: voiceActive ? 'voice_stop' : 'voice_start'}));
+}
+
+// Ctrl+V keyboard shortcut for voice toggle
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'v') { e.preventDefault(); toggleVoice(); }
+});
+
+connect();
+</script>
+</body>
+</html>

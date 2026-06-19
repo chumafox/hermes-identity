@@ -1,0 +1,2248 @@
+{
+  "schema_version": "2.0.0",
+  "metadata": {
+    "url": "https://example.com/",
+    "mode": "single-page",
+    "tier": "standard",
+    "engines": [
+      "google",
+      "yandex"
+    ],
+    "generatedAt": "2026-06-11T05:46:26.965Z"
+  },
+  "summary": {
+    "score": 87,
+    "grade": "B",
+    "confidence": "high",
+    "confidence_reason": "The score is backed by a broad set of applicable page-level checks.",
+    "applicable_checks": 51,
+    "pages_crawled": 1,
+    "failures": 7,
+    "warnings": 13,
+    "passes": 41,
+    "context_only": 6
+  },
+  "measured": [
+    "raw HTML fetch",
+    "page-level title, description, headings, links, images, and assets",
+    "robots.txt and sitemap as supporting site context",
+    "Google and Yandex page-level metadata and markup heuristics",
+    "lightweight HTML/resource performance heuristics"
+  ],
+  "not_measured": [
+    "real browser-rendered DOM after JavaScript execution",
+    "Core Web Vitals field data and lab metrics",
+    "paid backlink, SERP, or competitor datasets",
+    "off-page authority signals"
+  ],
+  "crawl": {
+    "mode": "single-page",
+    "startUrl": "https://example.com/",
+    "origin": "https://example.com",
+    "pagesCrawled": 1,
+    "pagesDiscovered": 1,
+    "errors": [],
+    "robots": {
+      "url": "https://example.com/robots.txt",
+      "status": 404,
+      "exists": false,
+      "sitemaps": []
+    },
+    "sitemaps": [
+      {
+        "url": "https://example.com/sitemap.xml",
+        "status": 404,
+        "ok": false,
+        "finalUrl": "https://example.com/sitemap.xml",
+        "urls": [],
+        "childSitemaps": []
+      }
+    ]
+  },
+  "page_snapshot": {
+    "mode": "single-page",
+    "url": "https://example.com/",
+    "final_url": "https://example.com/",
+    "status": 200,
+    "content_type": "text/html",
+    "response_time_ms": 221,
+    "html_bytes": 559,
+    "html_weight_human": "559 B",
+    "redirect_hops": 0,
+    "redirect_chain": [
+      {
+        "url": "https://example.com/",
+        "status": 200,
+        "location": null
+      }
+    ],
+    "crawlable_by_robots": true,
+    "site_context": {
+      "robots_exists": false,
+      "robots_url": "https://example.com/robots.txt",
+      "sitemap_available": false,
+      "sitemap_count": 0,
+      "sitemap_urls_discovered": 0
+    },
+    "title": {
+      "value": "Example Domain",
+      "length": 14
+    },
+    "description": {
+      "value": "",
+      "length": 0
+    },
+    "semantics": {
+      "first_paragraph": "This domain is for use in documentation examples without needing permission. Avoid use in operations.",
+      "paragraph_count": 2,
+      "title_h1_overlap": 1,
+      "title_description_overlap": 0,
+      "main_content_ratio": 0,
+      "main_word_count": 0,
+      "body_word_count": 17,
+      "short_paragraphs": 1,
+      "long_paragraphs": 0,
+      "repeated_headings": 0,
+      "repeated_heading_samples": []
+    },
+    "canonical": "https://example.com/",
+    "lang": "en",
+    "charset": "",
+    "viewport": "width=device-width, initial-scale=1",
+    "meta_robots": "",
+    "x_robots_tag": "",
+    "favicon": "data:,",
+    "word_count": 17,
+    "headings": {
+      "counts": {
+        "h1": 1,
+        "h2": 0,
+        "h3": 0,
+        "h4": 0,
+        "h5": 0,
+        "h6": 0
+      },
+      "values": {
+        "h1": [
+          "Example Domain"
+        ],
+        "h2": [],
+        "h3": [],
+        "h4": [],
+        "h5": [],
+        "h6": []
+      }
+    },
+    "links": {
+      "total": 1,
+      "internal": 0,
+      "external": 1,
+      "empty_anchor_text": 0,
+      "weak_internal_anchor_text": 0,
+      "generic_anchor_text": 1,
+      "generic_anchor_samples": [
+        {
+          "href": "https://iana.org/domains/example",
+          "text": "Learn more"
+        }
+      ],
+      "samples": [
+        {
+          "href": "https://iana.org/domains/example",
+          "text": "Learn more",
+          "rel": ""
+        }
+      ]
+    },
+    "images": {
+      "total": 0,
+      "missing_alt": 0,
+      "lazy_loaded": 0,
+      "without_lazy": 0,
+      "missing_dimensions": 0,
+      "modern_formats": 0,
+      "samples_missing_alt": []
+    },
+    "resources": {
+      "scripts": 0,
+      "inline_scripts": 0,
+      "inline_script_bytes": 0,
+      "stylesheets": 0,
+      "inline_style_bytes": 145,
+      "images": 0,
+      "total": 0
+    },
+    "business_signals": {
+      "commercial_or_local_intent": false,
+      "phone_count": 0,
+      "email_count": 0,
+      "address_mentions": 0,
+      "tel_links": 0,
+      "mailto_links": 0,
+      "messenger_links": 0,
+      "messenger_samples": [],
+      "cta_count": 0,
+      "cta_samples": [],
+      "button_count": 0,
+      "button_samples": [],
+      "form_count": 0,
+      "trust_marker_count": 0,
+      "trust_marker_samples": []
+    },
+    "structured_data": {
+      "json_ld_blocks": 0,
+      "json_ld_valid_blocks": 0,
+      "json_ld_invalid_blocks": 0,
+      "has_open_graph": false,
+      "has_twitter_card": false,
+      "has_local_business": false,
+      "has_organization": false,
+      "has_breadcrumbs": false,
+      "has_faq_page": false,
+      "has_howto": false,
+      "has_person": false,
+      "has_service": false,
+      "has_webpage": false,
+      "has_website": false,
+      "schema_types": [],
+      "schema_type_counts": {},
+      "schema_completeness_issues": [],
+      "open_graph_fields_present": 0,
+      "twitter_fields_present": 0,
+      "hreflang_count": 0,
+      "hreflangs": []
+    },
+    "geo_signals": {
+      "answer_first_paragraph_present": true,
+      "definition_like_intro": true,
+      "question_headings": 0,
+      "faq_schema_present": false,
+      "faq_schema_count": 0,
+      "howto_schema_present": false,
+      "howto_schema_count": 0,
+      "person_schema_count": 0,
+      "service_schema_count": 0,
+      "webpage_schema_count": 0,
+      "website_schema_count": 0,
+      "author_present": false,
+      "author_name": "",
+      "author_profile_link_present": false,
+      "author_profile_link": "https://example.com/",
+      "date_published_present": false,
+      "date_modified_present": false,
+      "date_published": "",
+      "date_modified": "",
+      "reference_links": 0,
+      "reference_link_samples": [],
+      "about_page_link_present": false,
+      "about_page_link": "",
+      "contact_page_link_present": false,
+      "contact_page_link": "",
+      "list_blocks": 0,
+      "table_blocks": 0,
+      "chunkable_sections": 0
+    },
+    "legal_signals": {
+      "total": 0,
+      "offer_count": 0,
+      "privacy_count": 0,
+      "cookies_count": 0,
+      "payment_count": 0,
+      "delivery_count": 0,
+      "guarantee_count": 0,
+      "requisites_count": 0,
+      "offer_samples": [],
+      "privacy_samples": [],
+      "cookies_samples": [],
+      "payment_samples": [],
+      "delivery_samples": [],
+      "guarantee_samples": [],
+      "requisites_samples": []
+    },
+    "region_signals": {
+      "region_mentions": 0,
+      "region_samples": []
+    },
+    "microdata": {
+      "itemtypeCount": 0,
+      "itempropCount": 0
+    },
+    "mixed_content_urls": []
+  },
+  "yandex_summary": {
+    "score": 57,
+    "grade": "F",
+    "blockers": [
+      {
+        "id": "yandex-crawl-guidance",
+        "title": "The audited page has strong crawl guidance for Yandex",
+        "status": "FAIL",
+        "recommendation": "Publish robots.txt, expose a valid XML sitemap, and reference the sitemap from robots.txt."
+      },
+      {
+        "id": "yandex-micro-markup",
+        "title": "The audited page exposes markup Yandex can interpret",
+        "status": "FAIL",
+        "recommendation": "Add structured metadata where relevant and validate it in Yandex Webmaster tooling."
+      },
+      {
+        "id": "yandex-snippet-readiness",
+        "title": "The audited page has snippet signals that are usable for Yandex results",
+        "status": "FAIL",
+        "recommendation": "Keep a specific title and a clear meta description in practical snippet ranges so Yandex can form stronger result previews."
+      }
+    ]
+  },
+  "geo_summary": {
+    "findings": 10,
+    "passes": 2,
+    "warnings": 2,
+    "failures": 2,
+    "strengths": [
+      "The audited page opens with an answer-friendly introduction for AI systems",
+      "The audited page is easy to summarize into a clear AI answer"
+    ],
+    "missing": [
+      {
+        "title": "The audited page includes question-led sections that map to conversational intent",
+        "status": "WARN",
+        "recommendation": "Turn key subtopics into explicit question-style headings such as what, how, why, pricing, process, or FAQ-style prompts."
+      },
+      {
+        "title": "The audited page clearly identifies the entity behind the content",
+        "status": "WARN",
+        "recommendation": "Expose clearer organization, service, person, about-page, and contact signals so the entity behind the content is easier to identify."
+      },
+      {
+        "title": "The audited page is structured into reusable chunks for AI summarization",
+        "status": "FAIL",
+        "recommendation": "Break the page into clearer sections with descriptive H2/H3 headings, short answer blocks, lists, and comparison tables where relevant."
+      },
+      {
+        "title": "The audited page exposes schema types that help AI systems understand entities and answers",
+        "status": "FAIL",
+        "recommendation": "Add the schema types that match the visible page purpose, such as Service, Person, FAQPage, HowTo, WebPage, or WebSite."
+      }
+    ]
+  },
+  "geo_signals": {
+    "answer_first_paragraph_present": true,
+    "definition_like_intro": true,
+    "question_headings": 0,
+    "faq_schema_present": false,
+    "faq_schema_count": 0,
+    "howto_schema_present": false,
+    "howto_schema_count": 0,
+    "person_schema_count": 0,
+    "service_schema_count": 0,
+    "webpage_schema_count": 0,
+    "website_schema_count": 0,
+    "author_present": false,
+    "author_name": "",
+    "author_profile_link_present": false,
+    "author_profile_link": "https://example.com/",
+    "date_published_present": false,
+    "date_modified_present": false,
+    "date_published": "",
+    "date_modified": "",
+    "reference_links": 0,
+    "reference_link_samples": [],
+    "about_page_link_present": false,
+    "about_page_link": "",
+    "contact_page_link_present": false,
+    "contact_page_link": "",
+    "list_blocks": 0,
+    "table_blocks": 0,
+    "chunkable_sections": 0
+  },
+  "evidence_samples": {
+    "generic_anchors": [
+      {
+        "href": "https://iana.org/domains/example",
+        "text": "Learn more"
+      }
+    ],
+    "missing_alt_images": [],
+    "schema_completeness_issues": [],
+    "cta_samples": [],
+    "geo_reference_links": []
+  },
+  "geo_priorities": [
+    {
+      "key": "schema",
+      "title": "Expand machine-readable GEO schema",
+      "why": "Richer page-, service-, person-, FAQ-, and website-level schema helps AI systems identify entities and reusable answer structures.",
+      "fix_now": "Add the schema types that match the visible page purpose, especially Service, Person, FAQPage, HowTo, WebPage, or WebSite.",
+      "evidence": "No schema types detected"
+    },
+    {
+      "key": "structure",
+      "title": "Break the page into cleaner answer blocks",
+      "why": "AI systems summarize better when pages have explicit sections, lists, and reusable chunks.",
+      "fix_now": "Use clearer H2/H3 sections, add lists or tables for comparisons, and separate key points into smaller blocks.",
+      "evidence": "0 chunkable sections"
+    }
+  ],
+  "lead_trust_priorities": [
+    {
+      "key": "contact",
+      "title": "Make contacting you effortless",
+      "urgency": "high",
+      "why": "Weak contact visibility reduces conversion from high-intent visitors.",
+      "fix_now": "Show a preferred contact method near the offer and repeat it lower on the page.",
+      "evidence": "0 phones, 0 emails, 0 messenger links"
+    },
+    {
+      "key": "conversion",
+      "title": "Show one obvious next step",
+      "urgency": "high",
+      "why": "Users need a simple visible action before they turn into leads.",
+      "fix_now": "Add one primary CTA near the top such as request a call, get pricing, or send an inquiry.",
+      "evidence": "0 forms, 0 buttons, 0 CTA links"
+    },
+    {
+      "key": "trust",
+      "title": "Add proof near the offer",
+      "urgency": "high",
+      "why": "Trust proof often decides whether a visitor contacts you now or continues comparing options.",
+      "fix_now": "Place reviews, case studies, guarantees, certificates, or portfolio proof beside the main promise and CTA.",
+      "evidence": "0 trust markers detected"
+    }
+  ],
+  "pages": [
+    {
+      "url": "https://example.com/",
+      "final_url": "https://example.com/",
+      "depth": 0,
+      "source": "start",
+      "status": 200,
+      "content_type": "text/html",
+      "timing_ms": 221,
+      "html_bytes": 559,
+      "crawlable_by_robots": true,
+      "redirect_chain": [
+        {
+          "url": "https://example.com/",
+          "status": 200,
+          "location": null
+        }
+      ],
+      "parsed": {
+        "title": "Example Domain",
+        "description": "",
+        "canonical": "https://example.com/",
+        "meta_robots": "",
+        "x_robots_tag": "",
+        "word_count": 17,
+        "headings": {
+          "h1": [
+            "Example Domain"
+          ],
+          "h2": [],
+          "h3": [],
+          "h4": [],
+          "h5": [],
+          "h6": []
+        },
+        "image_count": 0,
+        "missing_alt_count": 0,
+        "link_count": 1,
+        "hreflangs": [],
+        "json_ld_blocks": 0,
+        "json_ld_invalid_blocks": 0,
+        "open_graph": {
+          "title": "",
+          "description": "",
+          "image": "",
+          "type": ""
+        },
+        "twitter": {
+          "card": "",
+          "title": "",
+          "description": "",
+          "image": ""
+        },
+        "viewport": "width=device-width, initial-scale=1",
+        "mixed_content_urls": [],
+        "geo_signals": {
+          "questionHeadingCount": 0,
+          "faqSchemaCount": 0,
+          "howToSchemaCount": 0,
+          "personSchemaCount": 0,
+          "serviceSchemaCount": 0,
+          "webPageSchemaCount": 0,
+          "webSiteSchemaCount": 0,
+          "authorBylinePresent": false,
+          "authorName": "",
+          "authorLinkPresent": false,
+          "authorLink": "https://example.com/",
+          "datePublishedPresent": false,
+          "dateModifiedPresent": false,
+          "datePublished": "",
+          "dateModified": "",
+          "referenceLinkCount": 0,
+          "referenceLinkSamples": [],
+          "aboutLinkPresent": false,
+          "aboutLink": "",
+          "contactLinkPresent": false,
+          "contactLink": "",
+          "listBlockCount": 0,
+          "tableCount": 0,
+          "definitionLikeIntro": true,
+          "chunkableSectionCount": 0
+        },
+        "legal_signals": {
+          "categories": {
+            "offer": {
+              "count": 0,
+              "samples": []
+            },
+            "privacy": {
+              "count": 0,
+              "samples": []
+            },
+            "cookies": {
+              "count": 0,
+              "samples": []
+            },
+            "payment": {
+              "count": 0,
+              "samples": []
+            },
+            "delivery": {
+              "count": 0,
+              "samples": []
+            },
+            "guarantee": {
+              "count": 0,
+              "samples": []
+            },
+            "requisites": {
+              "count": 0,
+              "samples": []
+            }
+          },
+          "total": 0
+        },
+        "region_signals": {
+          "regionMentionCount": 0,
+          "regionMentionSamples": []
+        }
+      }
+    }
+  ],
+  "duplicates": {
+    "title": [],
+    "description": []
+  },
+  "prioritized_actions": [
+    {
+      "id": "charset-declaration",
+      "title": "The audited page exposes a charset declaration",
+      "category": "technical",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "The audited page does not expose a charset declaration in the parsed HTML.",
+      "recommendation": "Declare a charset such as UTF-8 in the HTML head.",
+      "evidence": []
+    },
+    {
+      "id": "title-length",
+      "title": "The audited page title length stays in a practical snippet range",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "The title looks shorter or longer than the typical practical range for search snippets.",
+      "recommendation": "Keep the title specific and usually within roughly 30-65 characters while prioritizing intent clarity.",
+      "evidence": []
+    },
+    {
+      "id": "description-presence",
+      "title": "The audited page exposes a meta description",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "The audited page does not expose a meta description.",
+      "recommendation": "Add a concise, intent-matching description that summarizes page value clearly.",
+      "evidence": []
+    },
+    {
+      "id": "thin-content",
+      "title": "The audited page contains enough visible copy to express topical depth",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "The audited page provides very little visible copy, which may limit topical clarity.",
+      "recommendation": "Expand the page copy so it answers the target intent more completely.",
+      "evidence": []
+    },
+    {
+      "id": "main-content-ratio",
+      "title": "The audited page has a healthy main-content-to-template ratio",
+      "category": "on_page",
+      "severity": "high",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [],
+      "details": "A large share of visible page text appears to come from template or surrounding boilerplate.",
+      "recommendation": "Strengthen the main content block and reduce repetitive template text around the core page topic.",
+      "evidence": []
+    },
+    {
+      "id": "generic-anchor-text",
+      "title": "The audited page avoids generic anchor text",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "Some links use generic anchors that weaken semantic clarity for users and search engines.",
+      "recommendation": "Replace generic anchors with destination-specific phrases that describe the next page more clearly.",
+      "evidence": [
+        {
+          "href": "https://iana.org/domains/example",
+          "text": "Learn more"
+        }
+      ]
+    },
+    {
+      "id": "open-graph-meta",
+      "title": "The audited page exposes Open Graph metadata",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "Open Graph metadata is missing on the audited page.",
+      "recommendation": "Add Open Graph tags so the page previews well in messengers and social platforms.",
+      "evidence": []
+    },
+    {
+      "id": "twitter-card-meta",
+      "title": "The audited page exposes Twitter Card metadata",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "Twitter Card metadata is missing on the audited page.",
+      "recommendation": "Add Twitter Card metadata so link previews remain consistent outside of search results.",
+      "evidence": []
+    }
+  ],
+  "issues": [
+    {
+      "id": "charset-declaration",
+      "title": "The audited page exposes a charset declaration",
+      "category": "technical",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "The audited page does not expose a charset declaration in the parsed HTML.",
+      "recommendation": "Declare a charset such as UTF-8 in the HTML head.",
+      "evidence": []
+    },
+    {
+      "id": "title-length",
+      "title": "The audited page title length stays in a practical snippet range",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "The title looks shorter or longer than the typical practical range for search snippets.",
+      "recommendation": "Keep the title specific and usually within roughly 30-65 characters while prioritizing intent clarity.",
+      "evidence": []
+    },
+    {
+      "id": "description-presence",
+      "title": "The audited page exposes a meta description",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "The audited page does not expose a meta description.",
+      "recommendation": "Add a concise, intent-matching description that summarizes page value clearly.",
+      "evidence": []
+    },
+    {
+      "id": "thin-content",
+      "title": "The audited page contains enough visible copy to express topical depth",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "The audited page provides very little visible copy, which may limit topical clarity.",
+      "recommendation": "Expand the page copy so it answers the target intent more completely.",
+      "evidence": []
+    },
+    {
+      "id": "main-content-ratio",
+      "title": "The audited page has a healthy main-content-to-template ratio",
+      "category": "on_page",
+      "severity": "high",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [],
+      "details": "A large share of visible page text appears to come from template or surrounding boilerplate.",
+      "recommendation": "Strengthen the main content block and reduce repetitive template text around the core page topic.",
+      "evidence": []
+    },
+    {
+      "id": "generic-anchor-text",
+      "title": "The audited page avoids generic anchor text",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "Some links use generic anchors that weaken semantic clarity for users and search engines.",
+      "recommendation": "Replace generic anchors with destination-specific phrases that describe the next page more clearly.",
+      "evidence": [
+        {
+          "href": "https://iana.org/domains/example",
+          "text": "Learn more"
+        }
+      ]
+    },
+    {
+      "id": "open-graph-meta",
+      "title": "The audited page exposes Open Graph metadata",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "Open Graph metadata is missing on the audited page.",
+      "recommendation": "Add Open Graph tags so the page previews well in messengers and social platforms.",
+      "evidence": []
+    },
+    {
+      "id": "twitter-card-meta",
+      "title": "The audited page exposes Twitter Card metadata",
+      "category": "on_page",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "Twitter Card metadata is missing on the audited page.",
+      "recommendation": "Add Twitter Card metadata so link previews remain consistent outside of search results.",
+      "evidence": []
+    },
+    {
+      "id": "question-led-structure",
+      "title": "The audited page includes question-led sections that map to conversational intent",
+      "category": "geo",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "The page exposes few or no explicit question-led headings, so it may map less directly to conversational search prompts.",
+      "recommendation": "Turn key subtopics into explicit question-style headings such as what, how, why, pricing, process, or FAQ-style prompts.",
+      "evidence": []
+    },
+    {
+      "id": "entity-home-clarity",
+      "title": "The audited page clearly identifies the entity behind the content",
+      "category": "geo",
+      "severity": "medium",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "details": "The page exposes weak entity-home signals, which can make AI systems less confident about ownership and authority.",
+      "recommendation": "Expose clearer organization, service, person, about-page, and contact signals so the entity behind the content is easier to identify.",
+      "evidence": []
+    },
+    {
+      "id": "chunkable-content-structure",
+      "title": "The audited page is structured into reusable chunks for AI summarization",
+      "category": "geo",
+      "severity": "high",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [],
+      "details": "The page exposes little obvious chunkable structure such as section blocks, lists, or tables.",
+      "recommendation": "Break the page into clearer sections with descriptive H2/H3 headings, short answer blocks, lists, and comparison tables where relevant.",
+      "evidence": []
+    },
+    {
+      "id": "geo-schema-coverage",
+      "title": "The audited page exposes schema types that help AI systems understand entities and answers",
+      "category": "geo",
+      "severity": "high",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [],
+      "details": "No useful entity or answer-oriented schema types were detected.",
+      "recommendation": "Add the schema types that match the visible page purpose, such as Service, Person, FAQPage, HowTo, WebPage, or WebSite.",
+      "evidence": []
+    },
+    {
+      "id": "google-structured-data-coverage",
+      "title": "The audited page exposes useful structured metadata for Google",
+      "category": "engine",
+      "severity": "high",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [
+        "google"
+      ],
+      "details": "The audited page lacks both structured data and preview metadata.",
+      "recommendation": "Add relevant schema.org JSON-LD and keep visible content aligned with markup.",
+      "evidence": []
+    },
+    {
+      "id": "yandex-crawl-guidance",
+      "title": "The audited page has strong crawl guidance for Yandex",
+      "category": "engine",
+      "severity": "high",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "details": "The audited page lacks both robots.txt and a valid sitemap, which weakens crawl discovery and canonical guidance for Yandex.",
+      "recommendation": "Publish robots.txt, expose a valid XML sitemap, and reference the sitemap from robots.txt.",
+      "evidence": []
+    },
+    {
+      "id": "yandex-micro-markup",
+      "title": "The audited page exposes markup Yandex can interpret",
+      "category": "engine",
+      "severity": "high",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "details": "The audited page lacks JSON-LD, preview metadata, and hreflang signals that can help Yandex-powered features.",
+      "recommendation": "Add structured metadata where relevant and validate it in Yandex Webmaster tooling.",
+      "evidence": []
+    },
+    {
+      "id": "yandex-snippet-readiness",
+      "title": "The audited page has snippet signals that are usable for Yandex results",
+      "category": "engine",
+      "severity": "high",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "details": "The page is missing either title or description, which weakens Yandex snippet quality.",
+      "recommendation": "Keep a specific title and a clear meta description in practical snippet ranges so Yandex can form stronger result previews.",
+      "evidence": []
+    }
+  ],
+  "geo_findings": [
+    {
+      "id": "direct-answer-intro",
+      "title": "The audited page opens with an answer-friendly introduction for AI systems",
+      "category": "geo",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "Opening paragraph reads like a direct answer",
+      "details": "The page opens with a concise paragraph that can be more easily quoted, summarized, or rewritten by AI answer systems.",
+      "recommendation": "",
+      "evidence": [
+        "This domain is for use in documentation examples without needing permission. Avoid use in operations."
+      ]
+    },
+    {
+      "id": "question-led-structure",
+      "title": "The audited page includes question-led sections that map to conversational intent",
+      "category": "geo",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "0 question-like headings",
+      "details": "The page exposes few or no explicit question-led headings, so it may map less directly to conversational search prompts.",
+      "recommendation": "Turn key subtopics into explicit question-style headings such as what, how, why, pricing, process, or FAQ-style prompts.",
+      "evidence": []
+    },
+    {
+      "id": "faq-howto-structured-support",
+      "title": "The audited page supports answer extraction with FAQ or HowTo structures",
+      "category": "geo",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "0 FAQPage, 0 HowTo",
+      "details": "The page does not strongly signal FAQ-like or instructional structure in the parsed HTML.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "source-citation-support",
+      "title": "The audited page gives AI systems source-like references to cite or validate",
+      "category": "geo",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "0 reference-like links",
+      "details": "The page is not content-heavy enough to strongly expect reference-style citations.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "author-attribution-visibility",
+      "title": "The audited page exposes visible authorship or expert attribution",
+      "category": "geo",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "No author signal detected",
+      "details": "The page is not strongly article-like, so missing author attribution is less conclusive.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "freshness-signals",
+      "title": "The audited page exposes freshness signals that help AI systems judge recency",
+      "category": "geo",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "No date signals detected",
+      "details": "Date visibility is less critical here because the page does not look strongly article-like.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "entity-home-clarity",
+      "title": "The audited page clearly identifies the entity behind the content",
+      "category": "geo",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "Weak entity signals",
+      "details": "The page exposes weak entity-home signals, which can make AI systems less confident about ownership and authority.",
+      "recommendation": "Expose clearer organization, service, person, about-page, and contact signals so the entity behind the content is easier to identify.",
+      "evidence": []
+    },
+    {
+      "id": "chunkable-content-structure",
+      "title": "The audited page is structured into reusable chunks for AI summarization",
+      "category": "geo",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [],
+      "severity": "high",
+      "url": null,
+      "value": "0 chunkable sections, 0 lists, 0 tables",
+      "details": "The page exposes little obvious chunkable structure such as section blocks, lists, or tables.",
+      "recommendation": "Break the page into clearer sections with descriptive H2/H3 headings, short answer blocks, lists, and comparison tables where relevant.",
+      "evidence": []
+    },
+    {
+      "id": "geo-schema-coverage",
+      "title": "The audited page exposes schema types that help AI systems understand entities and answers",
+      "category": "geo",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [],
+      "severity": "high",
+      "url": null,
+      "value": "No schema types detected",
+      "details": "No useful entity or answer-oriented schema types were detected.",
+      "recommendation": "Add the schema types that match the visible page purpose, such as Service, Person, FAQPage, HowTo, WebPage, or WebSite.",
+      "evidence": []
+    },
+    {
+      "id": "answerability-summary-clarity",
+      "title": "The audited page is easy to summarize into a clear AI answer",
+      "category": "geo",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "4/5 answerability signals",
+      "details": "The page combines strong top-of-page clarity, focused structure, and sufficient main content for concise AI summarization.",
+      "recommendation": "",
+      "evidence": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "https-enabled",
+      "title": "The audited page uses HTTPS",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "https://example.com/",
+      "details": "The requested page URL resolves over HTTPS.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "robots-availability",
+      "title": "robots.txt is available as crawl context",
+      "category": "technical",
+      "status": "WARN",
+      "scope": "context",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "https://example.com/robots.txt",
+      "details": "robots.txt could not be fetched successfully, so bot guidance is weaker than it should be.",
+      "recommendation": "Publish a valid robots.txt so crawlers can understand crawl rules and sitemap hints.",
+      "evidence": []
+    },
+    {
+      "id": "sitemap-availability",
+      "title": "XML sitemap is discoverable as site context",
+      "category": "technical",
+      "status": "WARN",
+      "scope": "context",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "0 URLs from 1 sitemap fetches",
+      "details": "No valid sitemap was discovered via robots.txt or /sitemap.xml.",
+      "recommendation": "Publish an XML sitemap and list it in robots.txt.",
+      "evidence": []
+    },
+    {
+      "id": "page-response-status",
+      "title": "The audited page returns a successful status code",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": 200,
+      "details": "The audited page responded with status 200.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "redirect-hops",
+      "title": "The audited page resolves without a long redirect chain",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0 redirect hops",
+      "details": "The audited URL resolves directly or with a single clean redirect.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "canonical-presence",
+      "title": "The audited page exposes a canonical tag",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "https://example.com/",
+      "details": "A canonical link element is present on the audited page.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "canonical-conflicts",
+      "title": "The audited page canonical matches the final URL",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "https://example.com/",
+      "details": "The canonical signal does not conflict with the final fetched URL.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "robot-directives",
+      "title": "The audited page has coherent indexability directives",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "index,follow",
+      "details": "The audited page does not expose a noindex directive.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "mixed-content",
+      "title": "The audited page avoids mixed-content resources",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0 mixed-content resources",
+      "details": "No HTTP resources were referenced from the audited page.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "robots-blocking",
+      "title": "The audited page is not blocked by robots.txt rules",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "Allowed",
+      "details": "The audited URL does not appear to be blocked by parsed robots rules.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "html-lang",
+      "title": "The audited page exposes an HTML lang attribute",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "en",
+      "details": "The audited page exposes an HTML lang attribute.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "charset-declaration",
+      "title": "The audited page exposes a charset declaration",
+      "category": "technical",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "Missing",
+      "details": "The audited page does not expose a charset declaration in the parsed HTML.",
+      "recommendation": "Declare a charset such as UTF-8 in the HTML head.",
+      "evidence": []
+    },
+    {
+      "id": "response-time",
+      "title": "The audited page responds within a practical time budget",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "221 ms",
+      "details": "The audited page HTML responded in 221 ms.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "html-weight",
+      "title": "The audited page HTML stays reasonably lean",
+      "category": "technical",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "559 B",
+      "details": "The audited page HTML payload is 559 B.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "title-presence",
+      "title": "The audited page exposes a title tag",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "Example Domain",
+      "details": "The audited page includes a title tag.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "title-length",
+      "title": "The audited page title length stays in a practical snippet range",
+      "category": "on_page",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "14 chars",
+      "details": "The title looks shorter or longer than the typical practical range for search snippets.",
+      "recommendation": "Keep the title specific and usually within roughly 30-65 characters while prioritizing intent clarity.",
+      "evidence": []
+    },
+    {
+      "id": "title-h1-alignment",
+      "title": "The audited page title and primary H1 describe the same topic",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "100% overlap",
+      "details": "The title and primary H1 appear semantically aligned.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "description-presence",
+      "title": "The audited page exposes a meta description",
+      "category": "on_page",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "Missing",
+      "details": "The audited page does not expose a meta description.",
+      "recommendation": "Add a concise, intent-matching description that summarizes page value clearly.",
+      "evidence": []
+    },
+    {
+      "id": "description-length",
+      "title": "The audited page description length is useful for snippets",
+      "category": "on_page",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "Missing description",
+      "details": "No description is available to score for snippet length.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "title-description-alignment",
+      "title": "The audited page title and meta description support the same intent",
+      "category": "on_page",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "0% overlap",
+      "details": "A title and description are both required to compare search-intent alignment.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "h1-usage",
+      "title": "The audited page has a single clear H1",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "1 H1 tags",
+      "details": "The audited page contains exactly one H1.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "heading-hierarchy",
+      "title": "The audited page heading hierarchy is logically nested",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "{\"h1\":1,\"h2\":0,\"h3\":0,\"h4\":0,\"h5\":0,\"h6\":0}",
+      "details": "No significant heading-level skips were detected on the audited page.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "thin-content",
+      "title": "The audited page contains enough visible copy to express topical depth",
+      "category": "on_page",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "17 words",
+      "details": "The audited page provides very little visible copy, which may limit topical clarity.",
+      "recommendation": "Expand the page copy so it answers the target intent more completely.",
+      "evidence": []
+    },
+    {
+      "id": "first-paragraph-clarity",
+      "title": "The audited page opens with clear above-the-fold copy",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "This domain is for use in documentation examples without needing permission. Avoid use in operations.",
+      "details": "The first visible paragraph provides enough copy to clarify the page offer or topic early.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "main-content-ratio",
+      "title": "The audited page has a healthy main-content-to-template ratio",
+      "category": "on_page",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [],
+      "severity": "high",
+      "url": null,
+      "value": "0% main content ratio",
+      "details": "A large share of visible page text appears to come from template or surrounding boilerplate.",
+      "recommendation": "Strengthen the main content block and reduce repetitive template text around the core page topic.",
+      "evidence": []
+    },
+    {
+      "id": "paragraph-quality",
+      "title": "The audited page paragraphs are balanced for readability",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "1 short, 0 long paragraphs",
+      "details": "The page copy looks reasonably balanced between scannability and depth.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "heading-repetition",
+      "title": "The audited page headings avoid repetitive section labels",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0 repeated headings",
+      "details": "No repeated heading text was detected across the parsed heading structure.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "image-alt",
+      "title": "The audited page images use descriptive alt text",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0/0 images missing alt text",
+      "details": "The audited page does not contain images.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "image-lazy-loading",
+      "title": "The audited page uses lazy loading for non-critical images",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0/0 images lazy-loaded",
+      "details": "The page is not image-heavy enough for lazy loading to be critical.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "internal-anchor-text",
+      "title": "The audited page internal links use descriptive anchor text",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0/0 weak internal anchors",
+      "details": "The audited page does not expose internal links in the parsed HTML.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "generic-anchor-text",
+      "title": "The audited page avoids generic anchor text",
+      "category": "on_page",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "1 generic anchors",
+      "details": "Some links use generic anchors that weaken semantic clarity for users and search engines.",
+      "recommendation": "Replace generic anchors with destination-specific phrases that describe the next page more clearly.",
+      "evidence": [
+        {
+          "href": "https://iana.org/domains/example",
+          "text": "Learn more"
+        }
+      ]
+    },
+    {
+      "id": "image-dimensions",
+      "title": "The audited page images declare width and height where possible",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0/0 images missing dimensions",
+      "details": "The audited page does not contain images.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "contact-signals",
+      "title": "Commercial or local pages expose clear contact signals",
+      "category": "on_page",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "No clear phone or email signals found",
+      "details": "The audited page does not strongly indicate a commercial or local intent, so contact expectations are reduced.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "conversion-path-visibility",
+      "title": "Commercial or local pages expose a visible conversion path",
+      "category": "on_page",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "No clear conversion path detected",
+      "details": "The page does not strongly indicate a commercial or local offer, so conversion-path expectations are lower.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "trust-markers",
+      "title": "Commercial or local pages expose trust-building proof",
+      "category": "on_page",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "0 trust markers",
+      "details": "The page does not clearly behave like a commercial or local landing page, so trust-proof expectations are lower.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "open-graph-meta",
+      "title": "The audited page exposes Open Graph metadata",
+      "category": "on_page",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "Missing",
+      "details": "Open Graph metadata is missing on the audited page.",
+      "recommendation": "Add Open Graph tags so the page previews well in messengers and social platforms.",
+      "evidence": []
+    },
+    {
+      "id": "twitter-card-meta",
+      "title": "The audited page exposes Twitter Card metadata",
+      "category": "on_page",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "Missing",
+      "details": "Twitter Card metadata is missing on the audited page.",
+      "recommendation": "Add Twitter Card metadata so link previews remain consistent outside of search results.",
+      "evidence": []
+    },
+    {
+      "id": "favicon",
+      "title": "The audited page exposes a favicon",
+      "category": "on_page",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "data:,",
+      "details": "The audited page exposes a favicon reference.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "page-load-time",
+      "title": "The audited page HTML response time stays below 3 seconds",
+      "category": "performance",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "221 ms",
+      "details": "The audited page HTML fetch time is 221 ms.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "page-html-weight",
+      "title": "The audited page HTML payload remains under 300 KB",
+      "category": "performance",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "559 B",
+      "details": "The audited page HTML size is 559 B.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "resource-request-count",
+      "title": "The audited page keeps initial asset references reasonable",
+      "category": "performance",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0 asset references",
+      "details": "The audited page references 0 images, scripts, and stylesheets in the parsed HTML.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "heavy-html-page",
+      "title": "The audited page avoids extremely heavy HTML",
+      "category": "performance",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "559 B",
+      "details": "The audited page does not exceed the heavy-page HTML threshold.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "js-pressure",
+      "title": "The audited page avoids excessive script pressure",
+      "category": "performance",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0 script tags",
+      "details": "The audited page does not appear script-heavy based on parsed HTML.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "inline-script-bloat",
+      "title": "The audited page avoids excessive inline JavaScript bloat",
+      "category": "performance",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0 B",
+      "details": "Inline JavaScript size stays within a practical range.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "inline-style-bloat",
+      "title": "The audited page avoids excessive inline style bloat",
+      "category": "performance",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "145 B",
+      "details": "Inline style size stays within a practical range.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "image-pressure",
+      "title": "The audited page avoids excessive image pressure",
+      "category": "performance",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0 images",
+      "details": "The audited page image count is within a practical range.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "image-dimension-performance",
+      "title": "The audited page images declare dimensions to reduce layout instability",
+      "category": "performance",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "0/0 images missing dimensions",
+      "details": "The audited page does not contain images.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "cwv-adapter",
+      "title": "Built-in free audit does not measure Core Web Vitals directly",
+      "category": "performance",
+      "status": "N/A",
+      "scope": "context",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "HTML and resource signals only",
+      "details": "This free local build reports built-in HTML and resource signals only.",
+      "recommendation": "Use the built-in HTML/resource findings here and treat CWV as outside the current free local scope.",
+      "evidence": []
+    },
+    {
+      "id": "direct-answer-intro",
+      "title": "The audited page opens with an answer-friendly introduction for AI systems",
+      "category": "geo",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "Opening paragraph reads like a direct answer",
+      "details": "The page opens with a concise paragraph that can be more easily quoted, summarized, or rewritten by AI answer systems.",
+      "recommendation": "",
+      "evidence": [
+        "This domain is for use in documentation examples without needing permission. Avoid use in operations."
+      ]
+    },
+    {
+      "id": "question-led-structure",
+      "title": "The audited page includes question-led sections that map to conversational intent",
+      "category": "geo",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "0 question-like headings",
+      "details": "The page exposes few or no explicit question-led headings, so it may map less directly to conversational search prompts.",
+      "recommendation": "Turn key subtopics into explicit question-style headings such as what, how, why, pricing, process, or FAQ-style prompts.",
+      "evidence": []
+    },
+    {
+      "id": "faq-howto-structured-support",
+      "title": "The audited page supports answer extraction with FAQ or HowTo structures",
+      "category": "geo",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "0 FAQPage, 0 HowTo",
+      "details": "The page does not strongly signal FAQ-like or instructional structure in the parsed HTML.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "source-citation-support",
+      "title": "The audited page gives AI systems source-like references to cite or validate",
+      "category": "geo",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "0 reference-like links",
+      "details": "The page is not content-heavy enough to strongly expect reference-style citations.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "author-attribution-visibility",
+      "title": "The audited page exposes visible authorship or expert attribution",
+      "category": "geo",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "No author signal detected",
+      "details": "The page is not strongly article-like, so missing author attribution is less conclusive.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "freshness-signals",
+      "title": "The audited page exposes freshness signals that help AI systems judge recency",
+      "category": "geo",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [],
+      "severity": "info",
+      "url": null,
+      "value": "No date signals detected",
+      "details": "Date visibility is less critical here because the page does not look strongly article-like.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "entity-home-clarity",
+      "title": "The audited page clearly identifies the entity behind the content",
+      "category": "geo",
+      "status": "WARN",
+      "scope": "page",
+      "engines": [],
+      "severity": "medium",
+      "url": null,
+      "value": "Weak entity signals",
+      "details": "The page exposes weak entity-home signals, which can make AI systems less confident about ownership and authority.",
+      "recommendation": "Expose clearer organization, service, person, about-page, and contact signals so the entity behind the content is easier to identify.",
+      "evidence": []
+    },
+    {
+      "id": "chunkable-content-structure",
+      "title": "The audited page is structured into reusable chunks for AI summarization",
+      "category": "geo",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [],
+      "severity": "high",
+      "url": null,
+      "value": "0 chunkable sections, 0 lists, 0 tables",
+      "details": "The page exposes little obvious chunkable structure such as section blocks, lists, or tables.",
+      "recommendation": "Break the page into clearer sections with descriptive H2/H3 headings, short answer blocks, lists, and comparison tables where relevant.",
+      "evidence": []
+    },
+    {
+      "id": "geo-schema-coverage",
+      "title": "The audited page exposes schema types that help AI systems understand entities and answers",
+      "category": "geo",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [],
+      "severity": "high",
+      "url": null,
+      "value": "No schema types detected",
+      "details": "No useful entity or answer-oriented schema types were detected.",
+      "recommendation": "Add the schema types that match the visible page purpose, such as Service, Person, FAQPage, HowTo, WebPage, or WebSite.",
+      "evidence": []
+    },
+    {
+      "id": "answerability-summary-clarity",
+      "title": "The audited page is easy to summarize into a clear AI answer",
+      "category": "geo",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [],
+      "severity": "low",
+      "url": null,
+      "value": "4/5 answerability signals",
+      "details": "The page combines strong top-of-page clarity, focused structure, and sufficient main content for concise AI summarization.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "google-canonical-alignment",
+      "title": "Google canonical signals are aligned for the audited page",
+      "category": "engine",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [
+        "google"
+      ],
+      "severity": "low",
+      "url": null,
+      "value": "https://example.com/",
+      "details": "The canonical signal does not conflict with the fetched page URL.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "google-hreflang-coverage",
+      "title": "The audited page declares hreflang only when localized alternates exist",
+      "category": "engine",
+      "status": "N/A",
+      "scope": "context",
+      "engines": [
+        "google"
+      ],
+      "severity": "info",
+      "url": null,
+      "value": "0 hreflang annotations",
+      "details": "A single-page audit cannot infer whether alternate locales exist, so hreflang is treated as contextual.",
+      "recommendation": "If this page has localized alternates, add reciprocal hreflang annotations and align them with canonicals.",
+      "evidence": []
+    },
+    {
+      "id": "google-structured-data-validity",
+      "title": "Structured data is syntactically valid for Google processing",
+      "category": "engine",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [
+        "google"
+      ],
+      "severity": "low",
+      "url": null,
+      "value": "0 invalid JSON-LD blocks",
+      "details": "No invalid JSON-LD blocks were detected on the audited page.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "google-structured-data-coverage",
+      "title": "The audited page exposes useful structured metadata for Google",
+      "category": "engine",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [
+        "google"
+      ],
+      "severity": "high",
+      "url": null,
+      "value": "Missing",
+      "details": "The audited page lacks both structured data and preview metadata.",
+      "recommendation": "Add relevant schema.org JSON-LD and keep visible content aligned with markup.",
+      "evidence": []
+    },
+    {
+      "id": "google-schema-completeness",
+      "title": "The audited page structured data is complete enough to be useful",
+      "category": "engine",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [
+        "google"
+      ],
+      "severity": "info",
+      "url": null,
+      "value": "0 completeness issues",
+      "details": "No schema types were detected, so completeness could not be evaluated.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "google-breadcrumb-coverage",
+      "title": "The audited page exposes breadcrumb markup when navigational depth suggests it",
+      "category": "engine",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [
+        "google"
+      ],
+      "severity": "info",
+      "url": null,
+      "value": "No breadcrumb schema detected",
+      "details": "The page does not strongly suggest a breadcrumb expectation in this built-in heuristic.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "google-mobile-viewport",
+      "title": "The audited page exposes a mobile viewport declaration",
+      "category": "engine",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [
+        "google"
+      ],
+      "severity": "low",
+      "url": null,
+      "value": "width=device-width, initial-scale=1",
+      "details": "The audited page exposes a viewport meta tag.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-crawl-guidance",
+      "title": "The audited page has strong crawl guidance for Yandex",
+      "category": "engine",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "high",
+      "url": null,
+      "value": "robots.txt and sitemap missing",
+      "details": "The audited page lacks both robots.txt and a valid sitemap, which weakens crawl discovery and canonical guidance for Yandex.",
+      "recommendation": "Publish robots.txt, expose a valid XML sitemap, and reference the sitemap from robots.txt.",
+      "evidence": []
+    },
+    {
+      "id": "yandex-robots",
+      "title": "Yandex crawl directives are explicitly published",
+      "category": "engine",
+      "status": "WARN",
+      "scope": "context",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "medium",
+      "url": null,
+      "value": "https://example.com/robots.txt",
+      "details": "robots.txt is unavailable, which weakens explicit crawl guidance for Yandex.",
+      "recommendation": "Publish robots.txt and include sitemap references where appropriate.",
+      "evidence": []
+    },
+    {
+      "id": "yandex-sitemap",
+      "title": "Yandex can discover XML sitemap coverage",
+      "category": "engine",
+      "status": "WARN",
+      "scope": "context",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "medium",
+      "url": null,
+      "value": "0 URLs discovered in sitemaps",
+      "details": "No valid XML sitemap was discovered for Yandex ingestion.",
+      "recommendation": "Expose a valid sitemap.xml and list it in robots.txt.",
+      "evidence": []
+    },
+    {
+      "id": "yandex-canonical-consistency",
+      "title": "Canonical recommendations are consistent for Yandex on the audited page",
+      "category": "engine",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "low",
+      "url": null,
+      "value": "https://example.com/",
+      "details": "The audited page canonical signal does not conflict with the fetched URL.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-micro-markup",
+      "title": "The audited page exposes markup Yandex can interpret",
+      "category": "engine",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "high",
+      "url": null,
+      "value": "Missing",
+      "details": "The audited page lacks JSON-LD, preview metadata, and hreflang signals that can help Yandex-powered features.",
+      "recommendation": "Add structured metadata where relevant and validate it in Yandex Webmaster tooling.",
+      "evidence": []
+    },
+    {
+      "id": "yandex-markup-completeness",
+      "title": "The audited page markup is complete enough for Yandex interpretation",
+      "category": "engine",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "info",
+      "url": null,
+      "value": "0 markup completeness issues",
+      "details": "No markup was detected, so completeness could not be evaluated.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-markup-validity",
+      "title": "Structured data blocks are syntactically valid for Yandex validation",
+      "category": "engine",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "info",
+      "url": null,
+      "value": "No JSON-LD blocks",
+      "details": "No JSON-LD blocks were detected, so syntax validation is not applicable.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-snippet-readiness",
+      "title": "The audited page has snippet signals that are usable for Yandex results",
+      "category": "engine",
+      "status": "FAIL",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "high",
+      "url": null,
+      "value": "14 title chars, 0 description chars",
+      "details": "The page is missing either title or description, which weakens Yandex snippet quality.",
+      "recommendation": "Keep a specific title and a clear meta description in practical snippet ranges so Yandex can form stronger result previews.",
+      "evidence": []
+    },
+    {
+      "id": "yandex-language-targeting",
+      "title": "The audited page clearly signals its Russian-language targeting for Yandex",
+      "category": "engine",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "info",
+      "url": null,
+      "value": "en",
+      "details": "The page does not strongly look like a Russian-targeted page in this built-in heuristic.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-regional-signals",
+      "title": "The audited page exposes clear regional signals for Yandex",
+      "category": "engine",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "info",
+      "url": null,
+      "value": "0 regional mentions",
+      "details": "The page does not strongly look like a Russian-targeted page in this heuristic.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-mobile-readiness",
+      "title": "The audited page exposes a mobile viewport for Yandex mobile search",
+      "category": "engine",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "low",
+      "url": null,
+      "value": "width=device-width, initial-scale=1",
+      "details": "The audited page exposes a viewport declaration for mobile rendering.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-local-signals",
+      "title": "Commercial or local pages expose clear business signals for Yandex",
+      "category": "engine",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "info",
+      "url": null,
+      "value": "No strong business signals found",
+      "details": "The page does not strongly suggest a commercial or local intent in the built-in heuristic.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-legal-transparency",
+      "title": "Commercial pages expose legal and transparency signals Yandex can trust",
+      "category": "engine",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "info",
+      "url": null,
+      "value": "0 legal/transparency page types detected",
+      "details": "The page does not strongly indicate a commercial intent, so legal/transparency expectations are lower.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-commercial-completeness",
+      "title": "Commercial pages look commercially complete for Yandex",
+      "category": "engine",
+      "status": "N/A",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "info",
+      "url": null,
+      "value": "1/5 commercial completeness signals",
+      "details": "The page does not strongly indicate a commercial intent in this built-in heuristic.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-behavioral-proxies",
+      "title": "The audited page has strong behavioral-quality proxies for Yandex",
+      "category": "engine",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "low",
+      "url": null,
+      "value": "6/7 behavioral-quality proxies",
+      "details": "The page looks technically and structurally comfortable enough to support good post-click experience signals.",
+      "recommendation": "",
+      "evidence": []
+    },
+    {
+      "id": "yandex-document-size",
+      "title": "The audited page stays below Yandex indexing size constraints",
+      "category": "engine",
+      "status": "PASS",
+      "scope": "page",
+      "engines": [
+        "yandex"
+      ],
+      "severity": "low",
+      "url": null,
+      "value": "1 KB",
+      "details": "The audited HTML document stays below Yandex size constraints.",
+      "recommendation": "",
+      "evidence": []
+    }
+  ],
+  "scores": {
+    "overall": {
+      "score": 87,
+      "grade": "B",
+      "confidence": "high",
+      "confidence_reason": "The score is backed by a broad set of applicable page-level checks.",
+      "applicable_checks": 51
+    },
+    "categories": {
+      "technical": {
+        "score": 96,
+        "grade": "A",
+        "applicable": 12,
+        "passed": 11,
+        "warned": 1,
+        "failed": 0,
+        "not_applicable": 0
+      },
+      "on_page": {
+        "score": 79,
+        "grade": "C",
+        "applicable": 19,
+        "passed": 12,
+        "warned": 6,
+        "failed": 1,
+        "not_applicable": 5
+      },
+      "engine": {
+        "score": 64,
+        "grade": "D",
+        "applicable": 11,
+        "passed": 7,
+        "warned": 0,
+        "failed": 4,
+        "not_applicable": 10
+      },
+      "performance": {
+        "score": 100,
+        "grade": "A",
+        "applicable": 9,
+        "passed": 9,
+        "warned": 0,
+        "failed": 0,
+        "not_applicable": 1
+      }
+    },
+    "engines": {
+      "google": {
+        "score": 75,
+        "grade": "C",
+        "applicable": 4,
+        "passed": 3,
+        "warned": 0,
+        "failed": 1,
+        "not_applicable": 10
+      },
+      "yandex": {
+        "score": 57,
+        "grade": "F",
+        "applicable": 7,
+        "passed": 4,
+        "warned": 0,
+        "failed": 3,
+        "not_applicable": 10
+      }
+    }
+  }
+}
