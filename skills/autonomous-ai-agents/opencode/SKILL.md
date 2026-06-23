@@ -207,6 +207,7 @@ terminal(command="opencode stats --days 7 --models anthropic/claude-sonnet-4")
 
 - Interactive `opencode` (TUI) sessions require `pty=true`. The `-p` one-shot does NOT need pty.
 - `/exit` is NOT a valid command — it opens an agent selector. Use Ctrl+C to exit the TUI.
+- **Process hangs after cancellation**: если opencode-сессия была отменена (cancel/Aborted), процесс может остаться висеть и жрать CPU (наблюдалось 31% CPU / 171MB RAM). Лог показывает цикл `agent=build` / `agent=compaction` без выхода. Проверяй `ps axo pid,pcpu,pmem,rss,comm -r | head` и убивай висящий opencode вручную: `kill <PID>`.
 - PATH mismatch can select the wrong OpenCode binary/model config.
 - If OpenCode appears stuck, inspect logs before killing:
   - `process(action="log", session_id="<id>")`
@@ -217,7 +218,8 @@ terminal(command="opencode stats --days 7 --models anthropic/claude-sonnet-4")
 - **"agent coder not found" (v0.0.55)**: the `agents.coder` block is missing from `~/.opencode.json`. Run `opencode` interactively once to generate the config, or add it manually (see Config Troubleshooting below). **v1.16.2+ fix**: удалить секцию `agents` из конфига — она не поддерживается.
 - **"Unrecognized key: agents" (v1.16.2+)**: opencode 1.16.2 не поддерживает ключ `agents` в конфиге. Удали его из `~/.config/opencode/opencode.json` и `~/.opencode.json`.
 - **"no valid provider available"**: the provider's apiKey is empty/missing, or no supported env var (OPENAI_API_KEY, ANTHROPIC_API_KEY, OPENROUTER_API_KEY, GROQ_API_KEY, GITHUB_TOKEN) is set. Проверь через `opencode providers list`.
-- **No custom base URL support**: opencode hardcodes API endpoints per provider (api.openai.com, api.anthropic.com, etc.). OpenAI-compatible proxies like Bailian/DashScope, Azure custom endpoints, or local LLM servers CANNOT be used as providers. If the user needs an OpenAI-compatible proxy, opencode is the wrong tool — use Hermes directly or a different CLI agent.
+- **omlx as local provider**: opencode v1.16.2+ поддерживает omlx как встроенный провайдер (`providerID=omlx`). Модели указываются как `mlx-community--<model-name>`. При cancel сессии opencode может зависнуть в цикле `agent=build` / `agent=compaction` — проверяй `ps` и убивай процесс вручную.
+- **No custom base URL support**: opencode hardcodes API endpoints per provider (api.openai.com, api.anthropic.com, etc.). OpenAI-compatible proxies like Bailian/DashScope, Azure custom endpoints CANNOT be used as providers. **Исключение:** omlx — встроенный провайдер, работает из коробки.
 - opencode does NOT work without internet access to the provider's actual API endpoint. China users without proxy will get connection failures.
 
 ## Config Troubleshooting

@@ -26,6 +26,22 @@ The `hf` command is the modern command-line interface for interacting with the H
 *   `hf sync`: Sync files between a local directory and a bucket.
 *   `hf env` / `hf version`: View environment and version details.
 
+### China Mirror
+
+From China, set `HF_ENDPOINT` to use the mirror:
+
+```bash
+export HF_ENDPOINT=https://hf-mirror.com
+hf download mlx-community/Qwen2.5-Coder-3B-Instruct --local-dir ~/shelf/mlx-models/Qwen2.5-Coder-3B-Instruct
+```
+
+Some models may not exist on the mirror (404/not found). In that case, authenticate first (`hf auth login`) or try direct download with a proxy.
+
+**Alternative (no auth needed):** `hfd.sh` + `aria2c` for faster downloads of public models:
+```bash
+HF_ENDPOINT=https://hf-mirror.com hfd.sh mlx-community/Qwen2.5-Coder-3B-Instruct
+```
+
 ### Authentication (`hf auth`)
 *   `login` / `logout`: Manage sessions using tokens from [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens).
 *   `list` / `switch`: Manage and toggle between multiple stored access tokens.

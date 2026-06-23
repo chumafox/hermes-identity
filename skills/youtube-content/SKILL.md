@@ -8,18 +8,33 @@ tags: ["media"]
 
 ## When to use
 
-Use when the user shares a YouTube URL or video link, asks to summarize a video, requests a transcript, or wants to extract and reformat content from any YouTube video. Transforms transcripts into structured content (chapters, summaries, threads, blog posts).
-
-Extract transcripts from YouTube videos and convert them into useful formats.
+Use when the user shares a YouTube URL or video link, asks to summarize a video, requests a transcript, wants to download audio, or wants to extract and reformat content from any YouTube video. Transforms transcripts into structured content (chapters, summaries, threads, blog posts). Also handles audio download via yt-dlp.
 
 ## Setup
 
+### Transcripts
+Use `uv` so the dependency is installed into the same Hermes-managed environment
+that runs the helper script:
+
 ```bash
-pip install youtube-transcript-api
+uv pip install youtube-transcript-api
 ```
 
-## Helper Script
+### Audio download
+yt-dlp is required. Check with `which yt-dlp`. Update if old:
 
+```bash
+# Old yt-dlp (< 2026) fails with "Signature extraction failed" on YouTube
+# Update via proxy if in China:
+pip install --proxy socks5://127.0.0.1:1080 --upgrade yt-dlp
+```
+
+### ALL_PROXY trap (China networking)
+If `ALL_PROXY=socks5://127.0.0.1:1080` is set in the environment, `pip install` will fail with `Missing dependencies for SOCKS support`. Fixes (in order of preference):
+
+1. Use explicit `--proxy` flag: `pip install --proxy socks5://127.0.0.1:1080 ...`
+2. Install pysocks first: `env -u ALL_PROXY pip install pysocks` then normal pip works
+3. Unset: `env -u ALL_PROXY pip install ...`
 `SKILL_DIR` is the directory containing this SKILL.md file. The script accepts any standard YouTube URL format, short links (youtu.be), shorts, embeds, live links, or a raw 11-character video ID.
 
 ```bash
@@ -70,4 +85,22 @@ After fetching the transcript, format it based on what the user asks for:
 - **Transcript disabled**: tell the user; suggest they check if subtitles are available on the video page.
 - **Private/unavailable video**: relay the error and ask the user to verify the URL.
 - **No matching language**: retry without `--language` to fetch any available transcript, then note the actual language to the user.
-- **Dependency missing**: run `pip install youtube-transcript-api` and retry.
+- **Dependency missing**: run `uv pip install youtube-transcript-api` and retry.
+
+## China / Proxy Pitfall
+
+YouTube is blocked in China. The `youtube-transcript-api` library uses `requests` which respects `HTTP_PROXY`/`HTTPS_PROXY` env vars. Two approaches:
+
+**A) System proxy (inpro bridge):**
+```bash
+http_proxy="http://127.0.0.1:8888" https_proxy="http://127.0.0.1:8888" python3 fetch_transcript.py ...
+```
+
+**B) NO_PROXY for localhost (when using CDP/WebSocket):**
+```bash
+NO_PROXY="*" python3 fetch_transcript.py ...
+```
+
+If `yt-dlp` is used as fallback, it also needs proxy and may fail with "not available on this app" errors — try `youtube-transcript-api` instead.
+
+**Verify proxy is running** before attempting: `scutil --proxy | grep HTTPEnable` should show 1.

@@ -24,11 +24,13 @@ echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf
 
 # macOS alternative via networksetup
 sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 1.1.1.1
-```
+## ALL_PROXY Trap & yt-dlp
 
-If DNS changes don't help, the host is blocked. Use mirrors.
+See `references/all-proxy-trap-and-ytdlp.md` for ALL_PROXY env var breaking pip, yt-dlp through proxy, and SSL errors on some videos.
 
-## CLI Tools Through Local Tunnel
+Internet Pro: `references/internet-pro.md`
+
+## CLI Tools
 
 When a local tunnel (SSH SOCKS5 :1080 or HTTP bridge :8888) to a machine with internet access is active, route CLI tools through it to reach blocked APIs.
 
