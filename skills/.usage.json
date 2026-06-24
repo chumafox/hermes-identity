@@ -289,14 +289,14 @@
     "archived_at": null,
     "created_at": "2026-06-14T07:32:05.829358+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-06-14T12:27:35.474223+00:00",
-    "last_used_at": "2026-06-20T01:20:18.160796+00:00",
-    "last_viewed_at": "2026-06-20T01:20:18.158973+00:00",
-    "patch_count": 69,
+    "last_patched_at": "2026-06-24T01:42:58.019048+00:00",
+    "last_used_at": "2026-06-24T01:42:38.994281+00:00",
+    "last_viewed_at": "2026-06-24T01:42:38.992639+00:00",
+    "patch_count": 70,
     "pinned": false,
     "state": "active",
-    "use_count": 93,
-    "view_count": 93
+    "use_count": 95,
+    "view_count": 95
   },
   "claude-code": {
     "archived_at": null,
@@ -497,14 +497,14 @@
     "archived_at": null,
     "created_at": "2026-06-17T08:43:41.091036+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-06-22T02:42:26.692529+00:00",
-    "last_used_at": "2026-06-22T06:47:55.001676+00:00",
-    "last_viewed_at": "2026-06-22T06:47:54.999838+00:00",
-    "patch_count": 17,
+    "last_patched_at": "2026-06-24T10:59:27.871013+00:00",
+    "last_used_at": "2026-06-24T10:57:19.554255+00:00",
+    "last_viewed_at": "2026-06-24T10:57:19.552646+00:00",
+    "patch_count": 20,
     "pinned": false,
     "state": "active",
-    "use_count": 10,
-    "view_count": 10
+    "use_count": 11,
+    "view_count": 11
   },
   "ghostty-config": {
     "archived_at": null,
@@ -965,14 +965,14 @@
     "archived_at": null,
     "created_at": "2026-05-12T09:52:56.402539+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-06-12T03:25:21.542608+00:00",
-    "last_used_at": "2026-06-22T03:14:10.848731+00:00",
-    "last_viewed_at": "2026-06-22T03:14:10.845864+00:00",
-    "patch_count": 49,
+    "last_patched_at": "2026-06-23T21:44:04.772705+00:00",
+    "last_used_at": "2026-06-23T21:43:06.343952+00:00",
+    "last_viewed_at": "2026-06-23T21:43:06.342435+00:00",
+    "patch_count": 50,
     "pinned": false,
     "state": "active",
-    "use_count": 93,
-    "view_count": 93
+    "use_count": 94,
+    "view_count": 94
   },
   "macos-app-inspection": {
     "archived_at": null,
@@ -1030,14 +1030,14 @@
     "archived_at": null,
     "created_at": "2026-06-23T04:05:52.017357+00:00",
     "created_by": "agent",
-    "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
-    "patch_count": 0,
+    "last_patched_at": "2026-06-23T21:44:12.496918+00:00",
+    "last_used_at": "2026-06-24T01:43:09.127910+00:00",
+    "last_viewed_at": "2026-06-24T01:43:09.126210+00:00",
+    "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 4,
+    "view_count": 4
   },
   "macos-project-organization": {
     "archived_at": null,
@@ -1600,16 +1600,16 @@
   },
   "songwriting-and-ai-music": {
     "archived_at": null,
-    "created_at": "2026-06-07T02:37:28.282763+00:00",
+    "created_at": "2026-06-24T05:38:51.964952+00:00",
     "created_by": null,
-    "last_patched_at": null,
-    "last_used_at": null,
-    "last_viewed_at": null,
-    "patch_count": 0,
+    "last_patched_at": "2026-06-24T05:38:51.964967+00:00",
+    "last_used_at": "2026-06-24T05:38:55.913269+00:00",
+    "last_viewed_at": "2026-06-24T05:38:55.911624+00:00",
+    "patch_count": 1,
     "pinned": false,
     "state": "active",
-    "use_count": 0,
-    "view_count": 0
+    "use_count": 1,
+    "view_count": 1
   },
   "spike": {
     "archived_at": null,
@@ -1623,6 +1623,19 @@
     "state": "active",
     "use_count": 0,
     "view_count": 0
+  },
+  "stagetraxx-database": {
+    "archived_at": null,
+    "created_at": "2026-06-24T08:51:27.413599+00:00",
+    "created_by": "agent",
+    "last_patched_at": "2026-06-24T09:51:57.795259+00:00",
+    "last_used_at": "2026-06-24T09:51:29.558613+00:00",
+    "last_viewed_at": "2026-06-24T09:51:29.556621+00:00",
+    "patch_count": 2,
+    "pinned": false,
+    "state": "active",
+    "use_count": 1,
+    "view_count": 1
   },
   "subagent-mentor": {
     "archived_at": null,
@@ -1758,14 +1771,14 @@
     "archived_at": null,
     "created_at": "2026-06-07T02:37:28.310411+00:00",
     "created_by": null,
-    "last_patched_at": "2026-06-22T09:49:00.327630+00:00",
-    "last_used_at": "2026-06-22T09:49:12.489147+00:00",
-    "last_viewed_at": "2026-06-22T09:49:12.487654+00:00",
-    "patch_count": 2,
+    "last_patched_at": "2026-06-24T00:13:18.067888+00:00",
+    "last_used_at": "2026-06-24T00:11:38.791481+00:00",
+    "last_viewed_at": "2026-06-24T00:11:38.789769+00:00",
+    "patch_count": 6,
     "pinned": false,
     "state": "active",
-    "use_count": 5,
-    "view_count": 5
+    "use_count": 7,
+    "view_count": 7
   },
   "yuanbao": {
     "archived_at": null,

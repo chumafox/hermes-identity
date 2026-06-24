@@ -1,6 +1,6 @@
 ---
 name: youtube-content
-description: "YouTube transcripts to summaries, threads, blogs."
+description: "YouTube: transcripts to summaries, threads, blogs, and audio downloads via yt-dlp."
 tags: ["media"]
 ---
 
@@ -51,6 +51,20 @@ python3 SKILL_DIR/scripts/fetch_transcript.py "URL" --timestamps
 python3 SKILL_DIR/scripts/fetch_transcript.py "URL" --language tr,en
 ```
 
+## Audio Download (yt-dlp)
+
+When the user wants the actual audio file (not just transcript/summary), use yt-dlp.
+See `references/audio-download.md` for full workflow, proxy pitfalls, and error handling.
+
+Quick reference:
+```bash
+pip install --proxy socks5://127.0.0.1:1080 --upgrade yt-dlp
+yt-dlp --proxy socks5://127.0.0.1:1080 \
+  -f bestaudio --extract-audio --audio-format mp3 \
+  -o "~/Downloads/%(title)s.%(ext)s" \
+  "https://www.youtube.com/watch?v=VIDEO_ID"
+```
+
 ## Output Formats
 
 After fetching the transcript, format it based on what the user asks for:
@@ -80,12 +94,45 @@ After fetching the transcript, format it based on what the user asks for:
 4. **Transform** into the requested output format. If the user did not specify a format, default to a summary.
 5. **Verify**: re-read the transformed output to check for coherence, correct timestamps, and completeness before presenting.
 
+## Audio Download (yt-dlp)
+
+When the user wants to download audio from a YouTube video (not just transcript), use `yt-dlp`:
+
+```bash
+# Install/update yt-dlp (use --proxy if in China)
+pip install --upgrade yt-dlp
+
+# Basic audio download (best audio stream → mp3)
+yt-dlp -f bestaudio --extract-audio --audio-format mp3 -o "~/Downloads/%(title)s.%(ext)s" "URL"
+
+# With SOCKS5 proxy (China, blocked services)
+yt-dlp --proxy socks5://127.0.0.1:1080 -f bestaudio --extract-audio --audio-format mp3 -o "~/Downloads/%(title)s.%(ext)s" "URL"
+
+# If web client fails with "not available on this app", try android client
+yt-dlp --proxy socks5://127.0.0.1:1080 --extractor-args "youtube:player_client=android" -f bestaudio --extract-audio --audio-format mp3 -o "~/Downloads/%(title)s.%(ext)s" "URL"
+```
+
+### China-specific notes
+
+- YouTube is blocked — always use `--proxy socks5://127.0.0.1:1080`
+- PyPI may be slow — use `--proxy socks5://127.0.0.1:1080` for pip too
+- If proxy SSL fails on specific videos (`SSL: UNEXPECTED_EOF_WHILE_READING`), the proxy connection is unstable for that video — try without proxy if on HK Mac, or skip
+- `WARNING: No supported JavaScript runtime` is harmless for basic audio downloads (ignore it)
+
+### Pitfalls
+
+- **Old yt-dlp** (pre-2026) breaks on YouTube signature changes. Always update first: `pip install --upgrade yt-dlp`
+- **ALL_PROXY env var** can break pip (SOCKS support missing). Use `env -u ALL_PROXY pip install ...` or `--proxy socks5://127.0.0.1:1080`
+- **SSL errors on some videos** — proxy connection is unstable for that specific video. Try different proxy or skip.
+- **Output filename** — yt-dlp uses the video title, which may contain special chars. Use `-o "~/Downloads/%(id)s.%(ext)s"` for stable filenames if needed.
+
 ## Error Handling
 
 - **Transcript disabled**: tell the user; suggest they check if subtitles are available on the video page.
 - **Private/unavailable video**: relay the error and ask the user to verify the URL.
 - **No matching language**: retry without `--language` to fetch any available transcript, then note the actual language to the user.
 - **Dependency missing**: run `uv pip install youtube-transcript-api` and retry.
+- **yt-dlp SSL/connection errors**: retry with `--proxy` or try android client with `--extractor-args "youtube:player_client=android"`
 
 ## China / Proxy Pitfall
 

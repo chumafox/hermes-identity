@@ -559,6 +559,31 @@ process(action='poll', session_id='proc_xxx')
 ssh target 'du -sh /dst/BigDir; ls /dst/BigDir | wc -l'
 ```
 
+### rsync for .app bundles (WiFi, direct copy)
+
+For copying `.app` bundles between Macs on the same network (both online, no airgap), `rsync` is faster and more reliable than `scp -r`:
+
+```bash
+# Basic .app copy to /Applications
+rsync -avP --progress \
+  -e 'ssh -o IdentitiesOnly=yes -i ~/.ssh/key -o StrictHostKeyChecking=no' \
+  user@source-ip:'/Applications/AppName.app' /Applications/
+
+# Copy to user-accessible location (no sudo needed)
+rsync -avP --progress \
+  -e 'ssh -o IdentitiesOnly=yes -i ~/.ssh/key' \
+  user@source-ip:'/Applications/AppName.app' ~/Downloads/
+```
+
+**Expected speed:** ~14-15 MB/s over WiFi (1.3GB .app → ~1 min).
+
+**Pitfall — destination permissions:** If copying to `/Applications/`, the app lands with the SSH user's ownership, not `root:admin`. After transfer:
+```bash
+sudo chown -R root:admin /Applications/AppName.app
+```
+
+**Pitfall — code signing:** rsync preserves extended attributes and code signatures correctly (unlike tar pipe). No `xattr -rc` needed after rsync.
+
 ### Two-app copy pattern (avoid permission errors)
 
 When copying multiple apps to /Applications in one tar pipe, `sudo tar xf -` in the pipe loses sudo context for individual file writes. **Always extract to /tmp first:**

@@ -28,8 +28,8 @@ ps axo pid,pcpu,pmem,rss,comm -m | head -25
 | Process | Typical RSS | Notes |
 |---------|-------------|-------|
 | Yandex Helper (Renderer) | 180-590MB | Multiple renderers, biggest hog |
-| opencode | 140-170MB | Can hang after cancel (31% CPU) |
-| omlx-server | 18-284MB | Grows when model loaded |
+| opencode | 140-170MB | Can hang after cancel (31% CPU, loops build/compaction). Kill manually. |
+| omlx-server | 18-284MB | Grows when model loaded. launchd-managed — kill -9 + launchctl unload. |
 | Hermes (python3) | 60-85MB | Normal |
 | Brave Browser | 50-55MB | Per process |
 | agy | 374MB | If running |

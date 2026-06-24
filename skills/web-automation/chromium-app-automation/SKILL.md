@@ -38,6 +38,30 @@ sleep 2
 
 The flag propagates to all child processes (Browser, Renderer, Accessory, etc.).
 
+### Persistent CDP wrapper (browser always starts with CDP)
+
+To make a browser ALWAYS launch with `--remote-debugging-port` (even when opened via Dock, Spotlight, or `open -a`), replace the binary with a shell wrapper:
+
+```bash
+cd /Applications/Brave\ Browser.app/Contents/MacOS/
+sudo mv "Brave Browser" "Brave Browser.real"
+sudo tee "Brave Browser" << 'WRAPPER'
+#!/bin/bash
+exec "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser.real" \
+  --remote-debugging-port=9222 \
+  "$@"
+WRAPPER
+sudo chmod +x "Brave Browser"
+```
+
+**Caveat:** Browser auto-updates may overwrite the wrapper. User should verify CDP still works after updates and re-apply if needed.
+
+To revert:
+```bash
+cd /Applications/Brave\ Browser.app/Contents/MacOS/
+sudo mv "Brave Browser.real" "Brave Browser"
+```
+
 ## Discover available pages
 
 ```bash

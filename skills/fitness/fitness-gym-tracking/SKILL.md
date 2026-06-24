@@ -49,7 +49,7 @@ Workout tracking system for the user's home gym. Logs live in `~/shelf/gym/`.
 
 - **Золотой подход:** +2.5 кг когда все повторения выполнены чисто
 - **Отказ надёжный** — техника не ломается
-- **Приседания Смит:** +2.5 кг
+- **Приседания Смит:** +2.5 кг, текущий рабочий 50 кг × 8
 - **Становая тяга:** +2.5-5 кг
 - **Тяга в наклоне:** +2.5 кг
 - **Бицепс:** +2.5 кг или дойти до 10 повторов
@@ -125,13 +125,17 @@ Each exercise gets a table:
 | 2 | XX кг | N | Рабочий |
 ```
 
-For walking lunges with dumbbells:
+For walking lunges with dumbbells (format: вес/шаги, 12 шагов = 6 на ногу):
 ```markdown
 ## N. Выпады в проходке (гантели)
 | Подход | Вес (каждая) | Шагов | На ногу | Тип |
 |--------|-------------|-------|---------|-----|
-| 1 | 10 кг | 12 | 6 | Рабочий |
+| 1 | 10 кг | 12 | 6 | Разминка |
+| 2 | 12 кг | 12 | 6 | Разминка |
+| 3 | 15 кг | 12 | 6 | Рабочий |
+| 4 | 17 кг | 12 | 6 | Рабочий |
 ```
+Прогрессия выпадов: +2.5 кг когда чисто. Текущий рабочий: 17 кг × 12 шагов.
 
 ### 3. Progression Tracking
 
@@ -147,7 +151,8 @@ Each main compound exercise follows:
 1. **Warm-up pyramid** to working weight (2-2.5 min rest between warm-ups)
 2. **1 Golden set** in true failure (~7-8 reps, reliable not "barely")
 3. **Isolation ("Доп") — OPTIONAL, only if energy permits.** 1-2 sets × 8-12, NOT to failure. Never mandatory.
-4. **Calves/abs:** 2 sets × 10-20, optional
+4. **Calves:** 4 sets × 10 (60 kg in standing calf raise machine), optional
+5. **Abs:** 2 sets × 10-20, optional
 
 **Example warm-up pyramid for 100 kg × 8 golden set:**
 40/10 → 60/8 → 75/5 → 90/3 → 105/1 → 100 golden × 8
