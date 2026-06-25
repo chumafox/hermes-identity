@@ -1,7 +1,7 @@
 # Memory Backup
-Generated: 2026-06-24 (cron identity sync)
+Generated: 2026-06-26 (cron identity sync)
 
-## Durable Facts (from `hermes memory list`)
+## Durable Facts (from built-in memory store)
 
 ### Doubao & Voice
 - Doubao (CDP 9223): ASR EN+ZH only. Inject: BlackHole+ffmpeg audiotoolbox
@@ -19,6 +19,7 @@ Generated: 2026-06-24 (cron identity sync)
 - Ship WiFi + pro Mac (192.168.103.70)
 - proxy_toggle: ~/bin/proxy_toggle
 - Pro (admin): Shadowrocket TUN (utun4, port 1082), SOCKS5 не работает
+- git proxy trap: проверять глобальный (~/.gitconfig) И локальный (.git/config)
 
 ### Development
 - iOS vibecoding, Xcode 16.2 на безголовом Mac
@@ -50,8 +51,7 @@ Generated: 2026-06-24 (cron identity sync)
 - Псиллиум Now Foods. Овсяная мука в шейк
 - 186см/85кг. Цель: сброс 6кг + сила
 - Сплит 5дн (ПН грудь/ВТ спина/СР ноги/ЧТ плечи/ПТ руки)
-- Архитектура: 1 золотой подход в отказ, пирамида разминки
-- Есть кольца (ring)
+- Приседания Смит 50/8, выпады формат вес/шаги (17/12), икры 4×10 (60кг)
 
 ### User Profile
 - Jenya, Chongqing, Китай
@@ -61,3 +61,4 @@ Generated: 2026-06-24 (cron identity sync)
 - Два Mac: dispo (HK) + pro (Китай/utun4)
 - Prefers нативные Apple-решения над сторонними
 - Prefers shared config across CLI agents — no duplicates
+- Python: /opt/homebrew/bin/python3

@@ -718,14 +718,14 @@
     "archived_at": null,
     "created_at": "2026-05-18T04:41:40.086863+00:00",
     "created_by": "agent",
-    "last_patched_at": "2026-06-10T07:13:23.610504+00:00",
-    "last_used_at": "2026-06-18T08:00:59.452780+00:00",
-    "last_viewed_at": "2026-06-18T08:00:59.450671+00:00",
-    "patch_count": 9,
+    "last_patched_at": "2026-06-24T21:26:07.947728+00:00",
+    "last_used_at": "2026-06-24T21:07:51.872110+00:00",
+    "last_viewed_at": "2026-06-24T21:07:51.870327+00:00",
+    "patch_count": 10,
     "pinned": false,
     "state": "active",
-    "use_count": 17,
-    "view_count": 17
+    "use_count": 18,
+    "view_count": 18
   },
   "hermes-skills-deploy": {
     "archived_at": null,
