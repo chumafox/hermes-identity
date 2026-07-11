@@ -29,6 +29,7 @@
 |--------|-----------|------------------|
 | deepseek-v4-flash | deepseek | Основная, быстрые задачи, SSH/терминал |
 | kimi-coding | kimi | Когда DeepSeek падает по rate limit |
+| claude-sonnet-4 | anthropic | Сложный код, рефакторинг, архитектура |
 | deepseek-chat | deepseek | Fallback, простые задачи |
 ```
 

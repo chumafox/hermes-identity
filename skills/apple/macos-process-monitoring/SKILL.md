@@ -96,3 +96,26 @@ ps axo pid,pcpu,pmem,rss,comm -r | head -25
 - **Процесс может игнорировать TERM** (SIGKILL-безопасные: omlx-server, launchd-демоны). Сразу используй `kill -9`.
 - **opencode после cancel** может виснуть в цикле `agent=build` / `agent=compaction` с 31% CPU. Проверять `ps` и убивать вручную.
 - **Yandex Browser** — самый жирный по памяти на этой системе (до 590MB на один рендерер).
+
+### ОПАСНО: `sudo ifconfig en0 down` на Apple Silicon
+
+**НИКОГДА не делай `sudo ifconfig en0 down` на M1/M2/M3/M4 Mac.** Это ломает драйвер Broadcom Wi-Fi (BCM4378) на уровне IOKit. Симптомы:
+
+- `ifconfig en0` показывает `status: inactive` даже после `up`
+- В логах kernel: `bpfAttach(12) failed (17)` — ошибка EEXIST, BPF-канал не освобождается
+- MAC-адрес en0 меняется на случайный, вернуть оригинал через ifconfig не даёт
+- Тогл Wi-Fi в меню-баре перестаёт реагировать
+- `networksetup -setairportpower` пишет `On` но en0 остаётся inactive
+
+**Что делать если уже сломал:**
+```bash
+# Перезагрузить Mac — только это фиксит
+sudo shutdown -r now
+```
+
+**Почему так:** на Apple Silicon драйвер Wi-Fi использует IO80211SkywalkInterface. ifconfig down/up на нём не перезагружает firmware чипа, но сбрасывает internal state. BPF-attach сбивается и не восстанавливается без полной переинициализации драйвера (только ребут).
+
+**Безопасные альтернативы:**
+- `networksetup -setairportpower en0 off/on` — безопасно, не ломает драйвер
+- `sudo launchctl unload /System/Library/LaunchDaemons/com.apple.airportd.plist` + load — мягкий перезапуск службы Wi-Fi
+- `sudo ifconfig en0 down` — **ЗАПРЕЩЕНО** на Apple Silicon

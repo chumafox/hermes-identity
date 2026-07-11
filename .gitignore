@@ -1,0 +1,10 @@
+# Node modules in skills (indexlift-seo-auditor etc.)
+**/node_modules/
+**/.DS_Store
+**/.usage.json
+**/.usage.json.lock
+**/.bundled_manifest
+**/.curator_state
+**/.curator_backups/
+**/.archive/
+**/.hub/

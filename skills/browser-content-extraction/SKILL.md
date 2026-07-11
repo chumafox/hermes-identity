@@ -29,16 +29,6 @@ When the user says "создай автоматизацию" (create automation)
 
 ## Prerequisites
 
-**Never hand-crank repetitive work.** If you'd do the same sequence (navigate → extract → download) more than twice, write a script instead. The script:
-- Embeds all IDs/names as data
-- Loops with error handling and resume
-- Saves tokens for both of you
-- Gets saved alongside this skill for reuse
-
-Scripts go in the project folder, referenced from the extraction output.
-
-## Prerequisites
-
 - A running browser with CDP (Chrome DevTools Protocol) enabled
 - `browser.cdp_url` configured in Hermes config
 - For logged-in sites: the browser must have active sessions (cookies/credentials)
@@ -321,6 +311,73 @@ Some pages lazy-render content below the fold. Use `browser_scroll` to trigger r
 browser_scroll(direction="down")
 # Then re-snapshot or re-extract
 ```
+
+### CDP Stale WebSocket / 404 Connection Error
+
+When `browser_navigate` or `browser_cdp` repeatedly fails with `404 Not Found` or `server rejected WebSocket connection: HTTP 404`, but the browser is running and `curl http://localhost:9222/json/list` returns tabs — Hermes has cached a stale WebSocket URL from a previous browser session.
+
+**Symptom:** `lsof -i :9222` shows the port listening and `curl -s http://localhost:9222/json/version` returns valid data, but all Hermes browser tools fail.
+
+**Root cause:** After Brave/Browser restart, the DevTools WebSocket ID changes. Hermes stores the old WS URL internally without refreshing on `/browser connect`.
+
+**Fix sequence (try in this order):**
+
+#### Fix 1: Full restart (fastest, works 90% of the time)
+
+Kill ALL browser processes and re-launch with CDP flag:
+
+```bash
+pkill -9 -f "Brave Browser"
+sleep 3
+open -a "Brave Browser" --args --remote-debugging-port=9222
+sleep 3
+curl -s http://localhost:9222/json/version
+```
+
+After this, Hermes browser tools work again — the old WS URL is gone with the old process.
+
+**Pitfall:** `pkill -9` kills all renderers and extensions. Use `osascript` for a gentler quit when forms/data matter:
+```bash
+osascript -e 'tell application "Brave Browser" to quit'
+sleep 2
+open -a "Brave Browser" --args --remote-debugging-port=9222
+```
+
+#### Fix 2: Python websockets fallback (when restart is not an option)
+
+Navigate and interact via the `websockets` library directly, bypassing Hermes' internal CDP client:
+
+```python
+import asyncio, json, urllib.request, websockets
+
+async def cdp_interact():
+    r = urllib.request.urlopen('http://localhost:9222/json/list')
+    tabs = json.loads(r.read())
+    
+    ws_url = None
+    for t in tabs:
+        if t['type'] == 'page':
+            ws_url = t['webSocketDebuggerUrl']
+            break
+    
+    async with websockets.connect(ws_url, max_size=5*1024*1024) as ws:
+        cmd = json.dumps({'id': 1, 'method': 'Page.navigate', 'params': {'url': 'https://example.com'}})
+        await ws.send(cmd)
+        resp = await asyncio.wait_for(ws.recv(), timeout=10)
+        await asyncio.sleep(3)
+        
+        cmd = json.dumps({'id': 2, 'method': 'Runtime.evaluate', 'params': {'expression': 'document.body.innerText'}})
+        await ws.send(cmd)
+        resp = await asyncio.wait_for(ws.recv(), timeout=10)
+        data = json.loads(resp).get('result', {}).get('result', {}).get('value', '')
+        return data
+
+asyncio.run(cdp_interact())
+```
+
+**Pitfall:** `websockets` library must be installed (`pip install websockets`). Always verify `window.location.href` after navigate — some sites redirect to login/block pages.
+
+**When to use Fix 2:** Only when Hermes tools are consistently failing AND restart is impractical (mid-download, long session). For most cases, Fix 1 (restart) is simpler.
 
 ### Phase 4: API-Based Extraction (Fallback for Protected Content)
 

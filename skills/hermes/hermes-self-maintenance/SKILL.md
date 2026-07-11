@@ -51,7 +51,10 @@ IDENTITY_DIR="$HOME/hermes-identity"
 
 # Copy identity files from Hermes home → repo
 cp "$HOME/.hermes/SOUL.md" "$IDENTITY_DIR/soul.md" 2>/dev/null || true
-cp -r "$HOME/.hermes/skills/" "$IDENTITY_DIR/skills/" 2>/dev/null || true
+cp "$HOME/.hermes/AGENTS.md" "$IDENTITY_DIR/AGENTS.md" 2>/dev/null || true
+
+# Use rsync for skills (handles large dirs, preserves structure, deletes stale)
+rsync -a --delete "$HOME/.hermes/skills/" "$IDENTITY_DIR/skills/" 2>/dev/null || true
 
 # Copy back from repo → Hermes home (for files loaded by Hermes)
 cp "$IDENTITY_DIR/soul.md" "$HOME/.hermes/SOUL.md" 2>/dev/null || true
@@ -100,12 +103,16 @@ rsync -a --delete ~/.hermes/skills/ ~/hermes-identity/skills/
 
 Если нужно записать отдельный файл через write_file — убедись, что содержимое < ~8K токенов. Большие файлы дробить на несколько write_file вызовов.
 
-### memory tool недоступен в cron
+### memory tool недоступен в cron, но flat-файлы читаются
 
-`memory()` (и `memory list`) не работают в контексте cron-запуска — возвращают ошибку "Memory is not available". Поэтому `memory-backup.md` **не может быть динамически обновлён** из cron. Стратегия:
-- memory-backup.md обновляется только при ручном запуске или в сессионном режиме
-- В cron — оставлять существующий файл без изменений
-- Альтернатива: если memory-backup.md критичен — вынести обновление в отдельный скрипт, который запускается в сессионном режиме
+`memory()` (и `hermes memory list`) не работают в контексте cron-запуска.
+Однако flat-файлы `~/.hermes/memories/MEMORY.md` и `USER.md` доступны
+напрямую через `read_file` или `cat`. Стратегия:
+
+- В cron: читать MEMORY.md + USER.md напрямую из файловой системы
+- Парсить numbered-line формат (`N|content`), пропуская `§`-разделители
+- Переформатировать в human-readable markdown и записать в memory-backup.md
+- См. `references/memory-filesystem-layout.md` для деталей формата и парсинга
 
 ### AGENTS.md может быть уже идентичен
 
@@ -152,6 +159,7 @@ session_search(query="sudo пароль approve approval разрешение")
 - **manual** — при опасных операциях (удаление, перезапись) на production-подобных средах
 - **smart** — золотая середина с LLM-фильтром
 
+См. `references/memory-filesystem-layout.md` для формата и парсинга memory-файлов.
 См. `references/approvals-audit.md` для истории проверок.
 
 ## Клонирование Hermes на другой Mac

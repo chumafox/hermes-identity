@@ -147,6 +147,64 @@ ssh -i ~/.ssh/key admin@<текущий_ip> \
   "sudo networksetup -setdhcp 'Wi-Fi'; sudo networksetup -setdnsservers 'Wi-Fi' empty"
 ```
 
+## Включение Wi-Fi поверх iPhone USB (dual-homing, не трогая приоритет)
+
+Когда нужно: интернет идёт через iPhone USB, но нужно включить Wi-Fi для локального доступа к другому Mac (SSH, Screen Sharing), не переключая default route.
+
+**Ключевое правило:** НЕ менять порядок служб (`networksetup -ordernetworkservices`). Просто включить Wi-Fi и подключиться к сети. macOS оставит активный default route через iPhone USB (флаг `g`), а Wi-Fi получит флаг `I` (interface-scoped).
+
+### Шаги
+
+1. **Включить Wi-Fi:**
+   ```bash
+   networksetup -setairportpower en0 on
+   # Проверка:
+   networksetup -getairportpower en0
+   # → "Wi-Fi Power (en0): On"
+   ```
+
+2. **Подключиться к сети (если пароль не сохранён):**
+   ```bash
+   networksetup -setairportnetwork en0 "SSID" "password"
+   ```
+
+3. **Проверить, что default route не изменился:**
+   ```bash
+   netstat -rn -f inet | grep default
+   ```
+   Ожидаем:
+   ```
+   default  172.20.10.1        UGScg    en5   (интернет — iPhone USB, флаг g)
+   default  192.168.x.1        UGScI    en0   (WiFi — локальный, флаг I)
+   ```
+
+4. **Проверить интернет всё ещё через iPhone:**
+   ```bash
+   curl -4 -s --max-time 5 ifconfig.me
+   # Должен показать China Mobile IP, не IP домашнего роутера
+   ```
+
+5. **Проверить доступ к другому Mac по LAN:**
+   ```bash
+   ping -c 2 192.168.x.x    # IP второго Mac
+   ssh admin@192.168.x.x "hostname"
+   ```
+
+### Если сети нет в сохранённых — пароль спросить у пользователя
+
+На macOS 26 (Sequoia+) нет встроенных CLI-способов найти пароль:
+- `security find-generic-password` часто зависает на Apple Silicon (M1)
+- `airport` утилита удалена из системы (недоступна ни в `/System/Library/PrivateFrameworks/`, ни через symlinks)
+- `networksetup -listpreferredwirelessnetworks` — только список имён, без паролей
+
+→ Единственный надёжный способ: **спросить пользователя**.
+
+### Питфоллы
+
+- **Не отключай Wi-Fi** после включения — он нужен для локальной связи
+- Если `networksetup -setairportnetwork` не сработал — проверь что en0 — правильный интерфейс Wi-Fi (может отличаться)
+- Зависший `security find-generic-password` — убить через `killall security` или подождать
+
 ## macOS 25 TCC блокирует доступ к Downloads через SSH
 
 **Критическое ограничение:** на macOS 25 (Sequoia) SSH/терминал **не имеют доступа** к `~/Downloads/` и sandbox-контейнерам (`~/Library/Containers/`) — **даже через sudo**.

@@ -1,6 +1,6 @@
 ---
 name: china-networking
-description: "Workarounds for Chinese internet restrictions — mirror sites, DNS, downloads, pip mirrors, and file transfer when GitHub/HuggingFace/Google are blocked or slow."
+description: "Workarounds for Chinese internet restrictions — mirrors, DNS, downloads, pip. Covers blocked services (GitHub/HF/Google) and proxy routing (SSH SOCKS5, HTTP bridge, internet-pro)."
 tags: ["china", "networking", "mirrors", "dns", "great-firewall", "workarounds"]
 ---
 
@@ -10,7 +10,7 @@ Strategies for operating in restricted networks (China GFW).
 
 ## Principle
 
-Direct downloads from GitHub, HuggingFace, Google, and DuckDuckGo WILL fail. Always have a mirror fallback.
+Direct downloads from GitHub, HuggingFace, Google, DuckDuckGo WILL fail. Use mirrors.
 
 ## DNS Resolution
 
@@ -26,9 +26,12 @@ echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf
 sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 1.1.1.1
 ## ALL_PROXY Trap & yt-dlp
 
-See `references/all-proxy-trap-and-ytdlp.md` for ALL_PROXY env var breaking pip, yt-dlp through proxy, and SSL errors on some videos.
+- **SSH -D tunnel** | SOCKS5 | built-in | via SSH key | Single device, ad-hoc
 
 Internet Pro: `references/internet-pro.md`
+Shadowrocket: `references/shadowrocket-diagnostics.md`
+Google region: `references/google-service-region-unblock.md`
+Go CLI socks5h: `references/go-cli-proxy.md`
 
 ## CLI Tools
 
@@ -1453,8 +1456,7 @@ curl -s --connect-timeout 5 -o /dev/null -w '%{http_code}' https://huggingface.c
 
 ```bash
 
-## Reference Files
-- `references/sing-box-headless.md` — sing-box setup for headless Mac (pro): install, config structure, subscription conversion, integration with Internet Pro
+Refs: `references/cdp-brave-browser.md`, `references/google-region-lock.md`
 
 - `references/sing-box-and-internet-sharing.md` — sing-box CLI proxy setup and Internet Pro SSH tunnel TUI
 

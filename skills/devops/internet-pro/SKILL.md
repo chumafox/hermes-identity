@@ -4,22 +4,11 @@ description: "Internet Pro — TUI-утилита для интернета эк
 tags: [ssh-tunnel, socks5, proxy, macos, networking, tui, internet-sharing]
 ---
 
-# Internet Pro
+# Internet Pro (LEGACY)
 
-**Internet Pro** — curses-based TUI for sharing internet from a headless Mac (pro) to the display Mac (dispo) via SSH dynamic port forwarding.
+**⚠️ УСТАРЕЛО — больше не используется.** Актуальная схема: sing-box TUN на dispo + Hysteria2 (через Shadowrocket) на pro. См. `macos-wifi-troubleshooting` → references/two-mac-network-architecture.md.
 
-## Critical: Network Architecture
-
-**Dispo (display Mac) has NO internet of its own.** Both Macs are on the same ship/local WiFi only (no WAN). Internet exists ONLY through pro's ZTE 4G/5G modem connected via Type-C. Pro's Shadowrocket TUN (utun4) routes all TCP traffic through a VPN node. Without internet_pro, dispo is completely offline — no Google, no GitHub, no anything.
-
-```
-ship WiFi (LAN only, no WAN)
-├── dispo (M1 Air) ← NO internet
-│   └── SSH -D 1080 → pro ← единственный путь к WAN
-└── pro (M1 Pro)
-    ├── ZTE 4G/5G Type-C ← единственный интернет
-    └── Shadowrocket TUN (utun4) ← прокси для доступа к Google/GitHub
-```
+**Internet Pro** — curses-based TUI for sharing internet from a headless Mac (pro) to the display Mac (dispo) via SSH dynamic port forwarding (старая схема).
 
 **KeepAlive is essential** — ship WiFi can be unstable, pro may go to sleep.
 
@@ -124,6 +113,150 @@ The entire TUI is in Russian. Translations done via direct string replacements:
 - Terminal prompts (SSH password, sudo prompts)
 - Log messages
 - Config wizard
+
+## Diagnostics: Slow Through Tunnel
+
+Когда туннель работает (статус АКТИВЕН), но скорость низкая — проблема почти всегда **на удалённой стороне (pro)**, не в самом inpro.
+
+### Диагностическая цепочка
+
+```bash
+# 1. Скорость WiFi между маками (iperf3)
+ssh admin-remote "pkill iperf3 2>/dev/null; iperf3 -s -1 -D"
+iperf3 -c 192.168.103.70 -t 5 -f m
+# Ожидание: 100+ Mbit/s. Если < 20 — проблема в WiFi/роутере.
+
+# 2. Скорость через SOCKS5 к китайским сайтам (проверка туннеля)
+curl -r 0-10485760 -o /dev/null -w "SOCKS5 CN Speed: %{speed_download} B/s\n" \
+  --socks5-hostname 127.0.0.1:1080 --max-time 30 \
+  https://mirrors.aliyun.com/ubuntu/ls-lR.gz
+# Ожидание: > 1 MB/s. Если низкая — проблема в SSH туннеле.
+
+# 3. Скорость к зарубежным сайтам через SOCKS5
+curl -r 0-10485760 -o /dev/null -w "SOCKS5 Foreign Speed: %{speed_download} B/s\n" \
+  --socks5-hostname 127.0.0.1:1080 --max-time 30 \
+  https://httpbin.org/bytes/10485760
+# Ожидание: > 500 KB/s.
+# ⚠️ ВАЖНО: httpbin.org может идти по правилу Direct в Shadowrocket.
+# Низкая скорость здесь НЕ означает что прокси мёртв.
+# Для дефинитивного теста используй speedtest (см. ниже).
+
+# 4. Проверить скорость на самом pro (через SSH мастер-сокет)
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  'curl -r 0-10485760 -o /dev/null -w "Pro Foreign Speed: %{speed_download} B/s\n" \
+  --max-time 30 "https://httpbin.org/bytes/10485760"'
+# Если тоже низкая — проблема в прокси/VPN на pro.
+
+# 5. Проверить скорость к Google API (обычно идёт через VIP-узел)
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  'curl -I -w "Google API Time: %{time_total}s\n" \
+  https://generativelanguage.googleapis.com/v1beta/models'
+# Если быстро (< 1s) — прокси работает для VIP-доменов, но не для всех.
+# Если медленно — прокси/сервер мёртв.
+```
+
+### Remote Proxy Health (Shadowrocket)
+
+Если скорость на pro низкая — проверь Shadowrocket:
+
+```bash
+# 0. ДЕФИНИТИВНЫЙ ТЕСТ — speedtest (Ookla)
+# curl к httpbin.org/GitHub Releases НЕ является надёжным индикатором.
+# Эти домены могут идти по правилу Direct или через медленный fallback.
+# Speedtest использует свою инфраструктуру и показывает реальную пропускную способность.
+SSL_CERT_FILE=/opt/homebrew/lib/python3.14/site-packages/certifi/cacert.pem speedtest --secure
+
+# 1. Статус Shadowrocket
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  "source ~/.zshrc && sr status"
+
+# 2. Какой сервер выбран
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  'plutil -p ~/Library/Group\ Containers/group.com.liguangming.Shadowrocket/Library/Preferences/group.com.liguangming.Shadowrocket.plist 2>/dev/null | grep -i SelectedServer'
+
+# 3. Режим маршрутизации
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  'plutil -p ~/Library/Group\ Containers/group.com.liguangming.Shadowrocket/Library/Preferences/group.com.liguangming.Shadowrocket.plist 2>/dev/null | grep -i GlobalRouting'
+# "Config" = Rule-based (китайские сайты напрямую, зарубежные через прокси)
+# "Proxy" = Global (весь трафик через прокси)
+
+# 4. Проверить подписку — жива ли
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  'curl -s "http://43.135.28.238/link/2SpPwMZaaLEJ1NoJ?list=shadowrocket" | base64 -d'
+# Если возвращает заглушки типа "客户端版本太旧了" — подписка мертва.
+
+# 5. Список всех серверов из ServerManager
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  'plutil -convert xml1 ~/Library/Group\ Containers/group.com.liguangming.Shadowrocket/ServerManager -o /tmp/servers.plist && python3 -c "
+import plistlib
+with open(\"/tmp/servers.plist\", \"rb\") as f:
+    data = plistlib.load(f)
+for obj in data.get(\"\$objects\", []):
+    if isinstance(obj, str) and len(obj) > 5 and not obj.startswith(\"http\") and not obj.startswith(\"ss:\"):
+        print(obj)
+"'
+```
+
+### ⚠️ Важное предостережение: curl к произвольным сайтам НЕ надёжен
+
+**Speedtest (Ookla) — единственный достоверный тест скорости прокси.**
+
+curl к httpbin.org, GitHub Releases, Hetzner и другим сайтам может показывать 14-50 KB/s даже когда прокси работает отлично (35+ Mbps). Причины:
+
+- **Rule-based маршрутизация** — эти домены могут идти по правилу Direct (напрямую через GFW)
+- **Троттлинг на конкретном узле** — некоторые прокси-провайдеры ограничивают скорость для non-VIP трафика
+- **DPI на определённые протоколы** — GitHub Releases может блокироваться отдельно от GitHub API
+
+**Проверено на практике:** Shadowrocket с сервером `AA香港1 IPLC VIP2` показывал:
+- curl httpbin.org: 50 KB/s
+- curl GitHub Releases: 14 B/s
+- **speedtest: 34.90 Mbit/s download, 18.25 Mbit/s upload**
+- Google API (generativelanguage.googleapis.com): 0.7s response time
+
+**Вывод:** не делай вывод о мёртвой подписке на основе curl к одному-двум сайтам. Всегда запускай speedtest.
+
+### Установка speedtest-cli на pro
+
+```bash
+# Если не установлен:
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  "pip3 install speedtest-cli --break-system-packages"
+
+# Запуск (может потребоваться SSL_CERT_FILE):
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  'SSL_CERT_FILE=/opt/homebrew/lib/python3.14/site-packages/certifi/cacert.pem speedtest --secure'
+```
+
+### Признаки проблем с Shadowrocket (проверенные)
+
+- **speedtest показывает < 5 Mbit/s** — реальная проблема
+- **Google API не отвечает** (> 5s timeout) — прокси не работает
+- **sr status показывает OFF** — VPN отключён
+- **IP при проверке через прокси — китайский** — трафик идёт напрямую
+
+### Что делать если прокси реально не работает
+
+1. **Переподключить Shadowrocket:** `ssh admin-remote "source ~/.zshrc && sr off && sleep 2 && sr on"`
+2. **Перезапустить полностью:** `ssh admin-remote "killall MacPacketTunnel Shadowrocket 2>/dev/null; source ~/.zshrc && sr on"`
+3. **Обновить подписку** — открыть Shadowrocket → Config → обновить URL подписки (если есть новый)
+4. **Включить LetsVPN** на pro (если установлен) — даёт готовый быстрый интернет
+5. **Включить LetsVPN на dispo** — тогда inpro не нужен, Air сам ходит в интернет
+6. **Tailscale exit node** — если есть HK Mac с Tailscale, настроить exit node
+7. **Переключить на другой прокси-клиент** (Surge, Stash, Sing-Box) с рабочей подпиской
+
+### Переключение Shadowrocket в Global режим
+
+```bash
+# Изменить режим
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  'defaults write ~/Library/Group\ Containers/group.com.liguangming.Shadowrocket/Library/Preferences/group.com.liguangming.Shadowrocket "group.com.liguangming.GlobalRoutingMethod" -string "Proxy"'
+
+# Перезапустить Shadowrocket
+ssh -S /tmp/internet_pro.socks admin@admin-remote \
+  "source ~/.zshrc && sr off && sleep 2 && sr on"
+```
+
+**Важно:** Global режим не поможет если сам сервер мёртв — трафик пойдёт через мёртвый сервер в любом режиме. Проверяй speedtest'ом.
 
 ## Troubleshooting
 

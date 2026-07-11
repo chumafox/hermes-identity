@@ -1,0 +1,65 @@
+#!/bin/bash
+# check_ip.sh — шаблон для /Users/<USERNAME>/check_ip.sh
+# Заменить <USERNAME> на имя пользователя
+# Запускается через launchd при входе в сессию
+
+ALLOWED_COUNTRIES="US DE JP SG GB CA AU"
+
+log() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >> /tmp/ip-check.log
+}
+
+notify() {
+  osascript -e "display notification \"$2\" with title \"$1\" sound name \"Basso\""
+}
+
+check_ip() {
+  local ip country
+  ip=$(curl -s --connect-timeout 5 --max-time 8 https://ifconfig.me 2>/dev/null)
+  country=$(curl -s --connect-timeout 5 --max-time 8 https://ipinfo.io/json 2>/dev/null | python3 -c "import sys,json; print(json.load(sys.stdin).get('country',''))" 2>/dev/null)
+
+  if [ -z "$country" ]; then
+    log "WARNING: Не удалось определить страну (ip=$ip)"
+    return 2
+  fi
+
+  log "IP: $ip, Страна: $country"
+
+  if [ "$country" = "CN" ]; then
+    log "BLOCKED: Китайский IP ($ip) — отключаем сеть"
+    notify "⚠️ Блокировка сети" "Китайский IP: $ip. Отключаю интернет."
+    /sbin/ifconfig en0 down 2>/dev/null
+    return 1
+  fi
+
+  log "OK: $country ($ip)"
+  return 0
+}
+
+# Ждём сеть (до 30 секунд)
+for i in $(seq 1 30); do
+  if ping -c 1 -W 1 8.8.8.8 &>/dev/null; then
+    log "Сеть доступна"
+    break
+  fi
+  sleep 1
+done
+
+check_ip
+RESULT=$?
+
+if [ $RESULT -eq 1 ]; then
+  sleep 10
+  /sbin/ifconfig en0 up 2>/dev/null
+  sleep 3
+  check_ip
+  if [ $? -eq 1 ]; then
+    notify "❌ Интернет заблокирован" "Китайский IP. Включи VPN и перезагрузи Mac."
+  else
+    notify "✅ Интернет работает" "IP: \$country"
+  fi
+elif [ $RESULT -eq 0 ]; then
+  notify "✅ Интернет подключён" "IP: \$country"
+fi
+
+exit $RESULT

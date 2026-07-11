@@ -426,6 +426,7 @@ See `references/doubao-web-bridge-ui.md` for full WebSocket protocol and pipelin
 ## Reference files
 
 - `references/doubao-reverse-engineering.md` — full architecture, page types, UI element positions, and config paths for ByteDance's Doubao app.
+- `references/brave-cdp-page-tab-direct.md` — direct page-tab WebSocket connection (workaround when Hermes caches stale browser WS ID), Network.setCookie before navigation, and Safaridriver W3C HTTP fallback.
 - `references/doubao-inject-test-transcript.md` — verified test transcript with EN↔ZH bilingual translation pipeline.
 - `references/doubao-asr-language-test.md` — comprehensive ASR language support test across 19 languages. Only EN and ZH work.
 - `references/doubao-ru-bridge-pipeline.md` — verified Russian bridge workflow: RU text → EN TTS → Doubao voice chat → ZH response → RU text.

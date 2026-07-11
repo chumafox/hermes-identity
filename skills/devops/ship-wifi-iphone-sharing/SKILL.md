@@ -515,6 +515,84 @@ killall Shadowrocket
 netstat -rn -f inet | grep default
 ```
 
+### VPN-on-demand (Happ / Shadowrocket) ломает интернет после ребута
+
+Happ и Shadowrocket настроены как VPN-on-demand сервисы (`scutil --nc list` показывает `* (Disconnected)` — включены). После перезагрузки они стартуют автоматически и создают utun-интерфейсы (utun0-5, utun9), которые перехватывают IPv6 default route.
+
+**Симптом:** интернет работает первые секунды после ребута (через iPhone USB), потом пропадает. Пинг бинга таймаутится. `netstat -rn` показывает default через en5 (iPhone USB), но IPv6 default через utun* перехватывает часть трафика.
+
+**Лечение (ручное):**
+```bash
+scutil --nc stop "Happ"
+scutil --nc stop "Shadowrocket"
+sudo ifconfig utun0 down
+sudo ifconfig utun1 down
+sudo ifconfig utun2 down
+sudo ifconfig utun3 down
+sudo ifconfig utun4 down
+sudo ifconfig utun5 down
+sudo ifconfig utun9 down 2>/dev/null
+```
+
+**Автоматический фикс через launchd:**
+```bash
+# Создать скрипт
+cat > ~/bin/fix-network-after-reboot.sh << 'SCRIPT'
+#!/bin/bash
+/usr/sbin/scutil --nc stop "Happ" 2>/dev/null
+/usr/sbin/scutil --nc stop "Shadowrocket" 2>/dev/null
+sleep 2
+for iface in utun0 utun1 utun2 utun3 utun4 utun5 utun9; do
+  /sbin/ifconfig "$iface" down 2>/dev/null
+done
+if /usr/sbin/netstat -rn -f inet | grep -q "^default.*en5"; then
+  echo "OK: Internet via en5 (iPhone USB)"
+else
+  echo "WARN: default route not via en5"
+  /usr/sbin/netstat -rn -f inet | grep "^default"
+fi
+SCRIPT
+chmod +x ~/bin/fix-network-after-reboot.sh
+
+# Создать launchd plist
+cat > ~/Library/LaunchAgents/com.user.fix-network.plist << 'PLIST'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.user.fix-network</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/jenyanovak/bin/fix-network-after-reboot.sh</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StartInterval</key>
+    <integer>30</integer>
+    <key>KeepAlive</key>
+    <false/>
+    <key>StandardOutPath</key>
+    <string>/tmp/fix-network.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/fix-network.log</string>
+</dict>
+</plist>
+PLIST
+launchctl load ~/Library/LaunchAgents/com.user.fix-network.plist
+```
+
+**После ребута может потребоваться переключение приоритета сервисов.** Даже если скрипт отработал (utun погашены), интернет может пойти через Wi-Fi вместо iPhone USB. Проверить:
+```bash
+netstat -rn -f inet | grep default
+# Флаг g = gateway (активный — внешний трафик)
+# Флаг I = interface-scoped (не используется для внешнего)
+# Правильно: default via en5 (iPhone USB) с флагом g
+# Если default через en0 (WiFi) — отключить-включить WiFi тоглом
+```
+
+**ВАЖНО — M1-специфичная ломка Wi-Fi драйвера:** На Apple Silicon (M1) команда `sudo ifconfig en0 down` ломает драйвер Broadcom BCM4378. Симптомы: `bpfAttach(12) failed (17)`, MAC-адрес меняется на случайный, статус `inactive` навсегда. Требуется полная перезагрузка. **Никогда не использовать `sudo ifconfig en0 down` на M1 Mac.** Для сброса Wi-Fi используй только `networksetup -setairportpower en0 off` / `on`.
+
 ### После убийства Shadowrocket может сбросить default route
 
 Shadowrocket работает как VPN/TUN, и после его убийства системные маршруты могут сбиться. Восстановить:
@@ -709,16 +787,101 @@ sudo chmod +x /usr/local/bin/hermes-proxy
 Когда WiFi корабля свободен — прокси лучше выключить (WiFi ~45 Mbps быстрее ZTE ~3 Mbps).
 Когда WiFi перегружен пассажирами — включить.
 
-## Особенности
+## Настройка Mac Pro: ZTE как единственный источник интернета (Wi-Fi только для локалки)
 
-- SSH-ключи: безголовый использует `id_ed25519_hermes` для доступа к экранному Mac
-- На экранном Mac Remote Login должен быть включён: `sudo systemsetup -getremotelogin`
-- IPv6 тоже работает через туннель (socks5h://, не socks5://)
-- Если IP экранного Mac изменился (DHCP) — заменить 192.168.103.192 на актуальный
-- Hermes на безголовом использует провайдера deepseek — запросы идут через интернет
-- **Shadowrocket на экранном Mac должен быть убит** — иначе туннель не работает
-- После убийства Shadowrocket может сбросить default route — восстановить: `sudo route add default 172.20.10.1`
-- Добавить `ServerAliveInterval` в SSH команду туннеля — иначе он рвётся через 15-30 мин бездействия
+На Mac Pro (безголовый, IP 192.168.103.70) интернет должен идти **только через ZTE (en8)**, а Wi-Fi (SJYH) — только для локального доступа к экранному Mac.
+
+### Текущее состояние Mac Pro (после ребута)
+
+```bash
+# Ethernet MAC на en0 может меняться (private address)
+# Service order:
+# (1) ZTE Mobile Broadband (en8) — интернет
+# (2) Wi-Fi (en0) — локальная сеть SJYH
+# (3) ...
+
+# ZTE даёт:
+#   IPv6: 2408:894e:c01:... (China Mobile/Unicom через NAT)
+#   IPv4: 169.254.x.x (link-local, DHCP не даёт IPv4!)
+# Wi-Fi (SJYH):
+#   IPv4: 192.168.103.70 (статический)
+```
+
+### Особенности ZTE модема на Mac Pro
+
+- **en8 (ZTE Mobile Broadband)** не виден как USB-устройство (`/dev/cu.*` пусто, `system_profiler SPUSBDataType` не показывает ZTE) — вероятно, встроенный модем через PCIe или Thunderbolt
+- **IPv4** — только link-local (169.254.x.x), DHCP не даёт роутер
+- **IPv6** — работает через SLAAC (`2408:894e:c01:...`), default route через `fe80::5e7d:aeff:fe27:aa28%en8`
+- **Физически ZTE может быть не подключён** — интерфейс en8 активен, но без модема трафика нет
+
+### Настройка приоритета сервисов
+
+```bash
+# Сделать ZTE первым (интернет), Wi-Fi вторым (локальный доступ)
+networksetup -ordernetworkservices "ZTE Mobile Broadband" "Wi-Fi"
+
+# Проверить
+netstat -rn -f inet | grep default
+# default            192.168.0.1       UGScg                 en8       ← ZTE (активный)
+# default            192.168.104.1     UGScIg                en0       ← Wi-Fi (только локальный, флаг I)
+# Флаг g = gateway (активный)
+# Флаг I = interface-scoped (не используется для внешнего трафика)
+```
+
+Если ZTE не даёт IPv4 (только 169.254.x.x), но имеет IPv6 — интернет по IPv6 будет работать, IPv4 — нет.
+
+### После ребута Mac Pro
+
+Happ и Shadowrocket на pro создают utun интерфейсы, ломающие IPv6 default. Симптомы:
+
+```bash
+# Проверить
+scutil --nc list
+# * (Disconnected) ... "Shadowrocket"
+# * (Disconnected) ... "Happ"
+
+netstat -rn -f inet6 | grep default
+# default  fe80::%utun0  UGcIg  utun0  ← ПРОБЛЕМА
+# default  fe80::%en8    UGcIg  en8    ← ZTE IPv6 (правильно)
+```
+
+**Решение (ручное):**
+```bash
+scutil --nc stop "Happ"
+scutil --nc stop "Shadowrocket"
+for iface in utun0 utun1 utun2 utun3 utun4 utun5; do
+  sudo ifconfig "$iface" down
+done
+```
+
+**Автоматизация:** добавить `fix-network-after-reboot.sh` и launchd plist (см. раздел "VPN-on-demand").
+
+### Проверка интернета на Mac Pro
+
+```bash
+# IPv4 — может не работать (ZTE даёт только IPv6)
+ping -c 2 -W 3 8.8.8.8
+
+# IPv6
+ping6 -c 2 -W 3 2001:4860:4860::8888
+# или через curl
+curl -6 -s -o /dev/null -w '%{http_code}' --connect-timeout 5 https://www.google.com
+curl -4 -s -o /dev/null -w '%{http_code}' --connect-timeout 5 https://www.google.com
+
+# Какой default route активен
+netstat -rn -f inet | grep default
+```
+
+### Проблема: ZTE физически не подключён, но en8 активен
+
+Если `system_profiler SPUSBDataType` не показывает ZTE, а `/dev/cu.*` пуст — модем отключён. en8 может иметь link-local IP (169.254.x.x) и даже IPv6 адрес (2408:...) от предыдущей сессии, но трафика не будет.
+
+**Решение:** 
+1. Убедиться что ZTE подключён к Mac Pro (USB)
+2. Если подключён — перезагрузить или отключить/включить USB
+3. Если ZTE встроенный (PCIe/Thunderbolt) — проверить в System Information → Network
+
+## Особенности
 
 ## Шпаргалки для самостоятельной диагностики (на экранном Mac)
 

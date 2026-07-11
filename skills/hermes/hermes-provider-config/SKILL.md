@@ -129,6 +129,76 @@ curl -s -w "\nHTTP_CODE:%{http_code}" https://dashscope.aliyuncs.com/compatible-
 3. **Если `providers: {}`** — Hermes полагается на model_catalog (фетчится с `hermes-agent.nousresearch.com`). Из Китая это может не грузиться → провайдеры не резолвятся.
 4. **После смены API-ключа** — проверить что `.env` и `providers` согласованы.
 
+## Remote provider config (multi-Mac sync)
+
+Когда нужно синхронизировать конфиг провайдеров между двумя Mac (например, Air → Pro) через SSH.
+
+### Workflow
+
+```bash
+# 1. Проверить текущее состояние на удалённой машине
+ssh admin-remote 'grep -A3 "^model:" ~/.hermes/config.yaml'
+ssh admin-remote 'grep -A 30 "^custom_providers:" ~/.hermes/config.yaml | head -30'
+ssh admin-remote 'cat ~/.hermes/.env 2>/dev/null'
+
+# 2. Простые значения — через hermes config set (работает через SSH)
+ssh admin-remote 'hermes config set model.base_url "https://ark.cn-beijing.volces.com/api/coding/v3"'
+
+# 3. Структурные изменения (custom_providers, credential_pool_strategies) —
+#    hermes config set не умеет писать YAML-списки (пишет JSON-строку).
+#    Использовать python3 -c с yaml модулем:
+ssh admin-remote 'python3 -c "
+import yaml
+with open(\"/Users/admin/.hermes/config.yaml\", \"r\") as f:
+    cfg = yaml.safe_load(f)
+# ... mutate cfg (add models, add providers, fix keys) ...
+with open(\"/Users/admin/.hermes/config.yaml\", \"w\") as f:
+    yaml.dump(cfg, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+print(\"OK\")
+"'
+
+# 4. Добавить недостающие env-ключи на удалённой машине
+#    (например, DEEPSEEK_FALLBACK_API_KEY из существующего DEEPSEEK_API_KEY)
+ssh admin-remote 'DKEY=$(grep "^DEEPSEEK_API_KEY=" ~/.hermes/.env | head -1); echo "$DKEY" | sed "s/DEEPSEEK_API_KEY/DEEPSEEK_FALLBACK_API_KEY/" >> ~/.hermes/.env'
+
+# 5. Верифицировать
+ssh admin-remote 'head -20 ~/.hermes/config.yaml'
+ssh admin-remote 'grep -E "DEEPSEEK|VOLC_CODING|KIMI" ~/.hermes/.env'
+```
+
+### Что нужно проверить при синхронизации
+
+| Параметр | Где смотреть | Типичное расхождение |
+|----------|-------------|---------------------|
+| `model.default` | `grep -A3 "^model:"` | Может быть старая модель |
+| `model.provider` | `grep -A3 "^model:"` | Может указывать на несуществующий провайдер |
+| `model.base_url` | `grep -A3 "^model:"` | На Pro может быть DeepSeek endpoint вместо Volc |
+| `custom_providers[].models` | `grep -A20 "^custom_providers:"` | На Pro может не быть поля `models` у volc-coding |
+| `custom_providers[deepseek-fallback]` | `grep "deepseek-fallback"` | Может отсутствовать целиком |
+| `fallback_model` | `grep -A2 "^fallback_model:"` | Может отсутствовать |
+| `credential_pool_strategies` | `grep -A1 "volc-coding"` | Может не быть volc-coding или отличаться backoff |
+| `DEEPSEEK_FALLBACK_API_KEY` в `.env` | `grep DEEPSEEK_FALLBACK ~/.hermes/.env` | Может отсутствовать (создать копию из DEEPSEEK_API_KEY) |
+| `skip_model_validation: true` | `grep "skip_model_validation"` | Может не быть у custom провайдеров |
+
+### Типичные расхождения между Air и Pro
+
+| Параметр | Air (рабочий) | Pro (сломанный) |
+|----------|---------------|-----------------|
+| `model.base_url` | Volc Coding endpoint | DeepSeek API endpoint |
+| `model.provider` | `custom:volc-coding` | `custom:volc-coding` (но провайдер без моделей) |
+| `custom_providers[volc-coding].models` | 10 моделей | нет поля `models` |
+| `custom_providers[deepseek-fallback]` | есть | нет |
+| `fallback_model` | есть | нет |
+| `credential_pool_strategies.volc-coding` | 300 | нет |
+| `DEEPSEEK_FALLBACK_API_KEY` в `.env` | есть | нет |
+
+### Почему python3 -c с yaml, а не sed
+
+- `hermes config set` не умеет писать YAML-списки (сериализует в JSON-строку)
+- `sed` на YAML — разрушительно (сдвигает строки, создаёт дубликаты)
+- `python3 -c` с yaml — атомарно: читает → мутирует → пишет. YAML-парсер сохраняет структуру.
+- yaml встроен в Python 3.14 (стандартная библиотека), не требует pip install
+
 ## Настройка explicit providers
 
 Вместо `providers: {}` (зависимость от model_catalog) прописать явно:
@@ -441,6 +511,8 @@ hermes config set fallback_providers '[
 
 ## Pitfalls
 
+- **Верифицируй перед тем как «чинить».** Если пользователь говорит «установи модель X провайдером Y» — сначала проверь текущее состояние: `grep -A3 '^model:' ~/.hermes/config.yaml`. Конфиг может уже быть правильным. Не начинай фиксить то, что не сломано.
+- **sed на YAML — разрушительно.** `sed -i ''` с номерами строк (6s/7s) ломает структуру: сдвигает строки, удаляет ключи, создаёт дубликаты. YAML — не line-oriented формат. Для простых значений используй `hermes config set`. Для структурных изменений — `hermes config edit` (открывает редактор). sed допустим только для однозначных паттернов вроде `sed -i '' '/^  base_url:/d'`, и то с риском.
 - **Auxiliary задачи падают с 400, когда основная модель работает** — проверь `auxiliary.*.provider`. Если они хардкодят `custom:bailian-cn` (аккаунт в arrears), фикс: переключить на `auto`.
 - **Runtime switch не персистится** — `/model deepseek-v4-flash` меняет модель в текущей сессии, но не пишет в config.yaml. После `/reset` или нового запуска вернётся старая.
 - **model_catalog из Китая** — если `model_catalog.url` недогрузился, built-in провайдеры могут не разрешиться. Явные `providers:` в config.yaml решают проблему.
@@ -495,7 +567,7 @@ hermes config set model.default deepseek-v4-flash
 ```yaml
 custom_providers:
   - name: volc-coding
-    base_url: https://ark.cn-beijing.volces.com/api/coding/v3
+    base_url: https://ark.cn-beijing.volces.com/api/coding/v3/v1
     api_key_env: VOLC_CODING_API_KEY
     api_mode: chat_completions
     skip_model_validation: true
@@ -518,6 +590,87 @@ custom_providers:
 **Pitfall — `/v1` suffix обязателен.** Volcengine Coding API не имеет `/models` эндпоинта по пути `.../api/coding/v3/models`. Hermes при старте пытается проверить модели через `GET /models` и падает с ошибкой `could not reach this custom endpoint's model listing`. Фикс: добавить `/v1` в base_url → `https://ark.cn-beijing.volces.com/api/coding/v3/v1`. Тогда `/v1/models` работает корректно.
 
 Подробнее о моделях, лимитах и ценах — `references/volc-coding-plan.md`.
+
+### Switching FROM Volc Coding to a different provider
+
+Volc Coding subscription ends → models become unavailable. **Do NOT just change the API key** — the Volc Coding endpoint (`ark.cn-beijing.volces.com/api/coding/v3/v1`) requires an active Coding Plan subscription.
+
+**Steps to migrate away:**
+
+1. **Clean up old config** — remove the volc-coding custom provider entry and any leftover model section:
+   ```bash
+   # Find line numbers of stale sections
+   grep -n 'name: volc-coding\\|^model:\\|^default:' ~/.hermes/config.yaml
+   # Delete stale sections (adjust line numbers!)
+   sed -i '' '/name: volc-coding/,/^  - /{/name: volc-coding/d; /name: volc-coding/b}' ~/.hermes/config.yaml
+   # OR: delete entire model section that points to volc-coding
+   ```
+   
+2. **Switch default provider** (direct DeepSeek API with sk- key):
+   ```bash
+   hermes config set default.provider custom:deepseek-fallback
+   hermes config set default.model deepseek-v4-flash
+   ```
+   
+3. **Fix auxiliary tasks** — Volc Coding doesn't support title_generation, so `auxiliary.title_generation` must be either pinned to a working provider or set to `auto`:
+   ```bash
+   hermes config set auxiliary.title_generation.provider auto
+   hermes config set auxiliary.title_generation.model ''
+   ```
+   
+4. **Verify**:
+   ```bash
+   hermes doctor
+   hermes chat -q 'test' --provider custom:deepseek-fallback
+   ```
+
+**Known pitfalls during migration:**
+- `hermes config set default.provider ...` CREATES A DUPLICATE `default:` section if one already exists. The old section remains, so Hermes reads the wrong one. Always check and deduplicate afterwards.
+- After switching default, `title_generation` may silently fail if the old Volc Coding config still has a separate `model:` block with volc-coding. Delete any stale `model:` section at top level.
+- `hermes config show` may NOT display the new default — check raw config with `grep -A3 '^default:' ~/.hermes/config.yaml` instead.
+
+## DeepSeek direct API (как fallback или основной провайдер)
+
+Когда Volc Coding или Bailian недоступны — DeepSeek напрямую через api.deepseek.com.
+
+**Config:**
+```yaml
+custom_providers:
+  - name: deepseek-fallback
+    base_url: https://api.deepseek.com/v1
+    api_key_env: DEEPSEEK_FALLBACK_API_KEY
+    api_mode: chat_completions
+    skip_model_validation: true
+    models:
+      - deepseek-chat
+      - deepseek-v4-flash
+      - deepseek-v4-pro
+```
+
+**Переключение:**
+```bash
+hermes config set default.provider custom:deepseek-fallback
+hermes config set default.model deepseek-v4-flash
+```
+
+**Pitfalls:**
+- `DEEPSEEK_API_KEY` (если это ark-ключ от Volc Coding) НЕ РАБОТАЕТ на api.deepseek.com. Используй `DEEPSEEK_FALLBACK_API_KEY` (sk-...) или отдельный DeepSeek ключ.
+- В `.env` может быть `DEEPSEEK_API_KEY=ark-...` (от Volc Coding) — не путай их. Проверь: `source ~/.hermes/.env && echo $DEEPSEEK_API_KEY | head -c 5`.
+- Если оставить `DEEPSEEK_API_KEY` с ark-ключом, а провайдера deepseek (built-in), title_generation уйдёт на api.deepseek.com с ark-ключом → 404. Фикс: явный `custom:deepseek-fallback` вместо built-in `deepseek`.
+
+### Когда DEEPSEEK_API_KEY — это Volc Coding ключ (ark-...)
+
+У пользователей Volc Coding KEYARK часто экспортируется как `DEEPSEEK_API_KEY`. Это создаёт проблему: built-in провайдер `deepseek` использует `DEEPSEEK_API_KEY`, но ark-ключ не работает на api.deepseek.com.
+
+**Диагностика:**
+```bash
+source ~/.hermes/.env
+echo "DEEPSEEK_API_KEY starts with: ${DEEPSEEK_API_KEY:0:5}"
+# Если ark-... → это Volc Coding ключ, не DeepSeek
+# Если sk-... → нормальный DeepSeek ключ
+```
+
+**Fix:** никогда не используй built-in `deepseek` провайдер, если `DEEPSEEK_API_KEY` ark-ключ. Всегда используй `custom:deepseek-fallback`:
 
 ### Проверка всех эндпоинтов (массовая диагностика)
 

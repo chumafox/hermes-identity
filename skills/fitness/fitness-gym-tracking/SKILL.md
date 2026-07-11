@@ -2,11 +2,14 @@
 name: fitness-gym-tracking
 description: "Gym workout tracking: weekly plans, daily logs, progression tracking. Directory ~/shelf/gym/ with training_plan.md, daily YYYY-MM-DD.md logs, and weekly-YYYY-MM-DD.md plans."
 tags: [fitness, gym, workout, tracking, progression, logging]
+core: true
 ---
 
 # Fitness / Gym Workout Tracking
 
 Workout tracking system for the user's home gym. Logs live in `~/shelf/gym/`.
+
+**Also see companion web app:** `references/gym-diary-web-app.md` — a local React app at `~/Projects/active/gym-diary/` with calendar, dropdown logging, volume calc, and progression charts.
 
 ## Directory Structure
 
@@ -32,6 +35,8 @@ Workout tracking system for the user's home gym. Logs live in `~/shelf/gym/`.
 **Отдых:** 2-2.5 мин между разминочными, 4 мин перед золотым подходом.
 
 **Доп (изоляция) — ТОЛЬКО если есть силы, не обязательно.** Пресс, икры, изоляция рук — 1-2 подхода × 8-12, не в отказ. Не делать "на всякий случай". Если пользователь спрашивает "а это напомни как работает?" — ответ: не обязательно, делай только если есть силы и время.
+
+**Пресс на скамье с блином на вытянутых руках:** добавлен во все 5 тренировочных дней как обязательное доп-упражнение. 2 подхода × 12-15. Техника: лечь на скамью, блин на вытянутых руках над грудью, опускать за голову и возвращать.
 
 **Кольца (ring):** есть у пользователя. Упражнения: подтягивания обратным хватом, отжимания вертикальные, отжимания горизонтальные. Веса пока не установлены — `?/?`.
 
@@ -151,8 +156,9 @@ Each main compound exercise follows:
 1. **Warm-up pyramid** to working weight (2-2.5 min rest between warm-ups)
 2. **1 Golden set** in true failure (~7-8 reps, reliable not "barely")
 3. **Isolation ("Доп") — OPTIONAL, only if energy permits.** 1-2 sets × 8-12, NOT to failure. Never mandatory.
-4. **Calves:** 4 sets × 10 (60 kg in standing calf raise machine), optional
-5. **Abs:** 2 sets × 10-20, optional
+- **Calves:** 4 sets × 10 (60 kg in standing calf raise machine), optional
+- **Abs on bench with plate on extended arms:** 2 sets × 12-15, every training day (added by user request). Technique: lie on bench, hold plate with arms extended above chest, lower behind head and return.
+- **Abs:** 2 sets × 10-20, optional
 
 **Example warm-up pyramid for 100 kg × 8 golden set:**
 40/10 → 60/8 → 75/5 → 90/3 → 105/1 → 100 golden × 8
