@@ -93,6 +93,29 @@ StrictHostKeyChecking no
 
 ## Pitfalls
 
+### .gitignore в hermes-identity (verified)
+
+В `~/hermes-identity/.gitignore` должны быть исключены артефакты, которые могут попасть через rsync skills:
+
+```gitignore
+# Node modules in skills (indexlift-seo-auditor etc.)
+**/node_modules/
+**/.DS_Store
+**/.usage.json
+**/.usage.json.lock
+**/.bundled_manifest
+**/.curator_state
+**/.curator_backups/
+**/.archive/
+**/.hub/
+```
+
+Если .gitignore ещё не существует — создать при первой синхронизации. Если node_modules уже были закоммичены в прошлом — удалить из трекинга:
+
+```bash
+git rm -r --cached skills/**/node_modules/
+```
+
 ### write_file timeout при копировании skills
 
 При попытке записать большой файл (напр. `.bundled_manifest` или `.usage.json`) через `write_file` стрим может упасть с timeout. Решение: **не использовать write_file для массового копирования skills**. Использовать `rsync -a --delete` через terminal:

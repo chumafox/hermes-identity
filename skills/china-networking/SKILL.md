@@ -1,6 +1,6 @@
 ---
 name: china-networking
-description: "Workarounds for Chinese internet restrictions — mirrors, DNS, downloads, pip. Covers blocked services (GitHub/HF/Google) and proxy routing (SSH SOCKS5, HTTP bridge, internet-pro)."
+description: "Workarounds for Chinese internet restrictions — proxy routing, leak verification (IP/DNS/WebRTC/timezone), blocked services, Google region-unblock, Go CLI proxy quirks, and macOS network isolation."
 tags: ["china", "networking", "mirrors", "dns", "great-firewall", "workarounds"]
 ---
 
@@ -26,12 +26,12 @@ echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf
 sudo networksetup -setdnsservers Wi-Fi 8.8.8.8 1.1.1.1
 ## ALL_PROXY Trap & yt-dlp
 
-- **SSH -D tunnel** | SOCKS5 | built-in | via SSH key | Single device, ad-hoc
-
-Internet Pro: `references/internet-pro.md`
-Shadowrocket: `references/shadowrocket-diagnostics.md`
-Google region: `references/google-service-region-unblock.md`
-Go CLI socks5h: `references/go-cli-proxy.md`
+Internet Pro: `refs/internet-pro.md`
+Shadow: `refs/shadowrocket-diagnostics.md`
+Google: `refs/google-service-region-unblock.md`
+Go CLI: `refs/go-cli-proxy.md`
+Proxy/VPN: `refs/proxy-leak-verification.md`
+Antigravity: `refs/antigravity-cli-setup.md`
 
 ## CLI Tools
 

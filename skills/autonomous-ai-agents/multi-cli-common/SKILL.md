@@ -171,7 +171,7 @@ deploy.sh обрабатывает разные форматы:
 - **git init в ~/cli-common/** — рекомендуется для версионирования.
 - **agy не поддерживает файловые конфиги** — саб-агенты только динамические через /goal, MCP не конфигурируется через файлы.
 - **Несколько Google аккаунтов в agy** — см. `references/agy-multi-account.md`. Используй `CLOUDSDK_CORE_ACCOUNT=email agy` в каждой сессии или HOME-изоляцию.
-- **Region block в agy API** — см. `references/agy-region-block.md`. agy использует Google Cloud Code Assist API (`cloudcode-pa.googleapis.com`), который блокирует регионы на уровне API, а не сети. Даже при работающем прокси может вернуть `FAILED_PRECONDITION (code 400): User location is not supported for the API use.` Решение: сменить exit location прокси на США.
+- **Region block в agy API** — см. `references/agy-region-block.md`. agy использует Google Cloud Code Assist API (`cloudcode-pa.googleapis.com`), который блокирует регионы на уровне API, а не сети. **Три причины FAILED_PRECONDITION 400:** (1) staging-эндпоинт `daily-` вместо production — фикс `CLOUD_CODE_URL=https://cloudcode-pa.googleapis.com.` (2) ASN Datacamp — Google блокирует hosting-диапазоны, Cloudflare Warp (`127.0.0.1:40000`) не помогает из Китая (Warp даёт China IP). (3) OAuth-аккаунт «запечён» с регионом — поможет переавторизация под US-аккаунтом. Anthropic-модели работают всегда (через Vertex AI). Диагностика: логи в `~/.gemini/antigravity-cli/log/`, чеклист в reference.
 
 ## Kimi Code provider config
 

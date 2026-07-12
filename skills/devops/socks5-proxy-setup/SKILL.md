@@ -57,86 +57,40 @@ On this setup:
 - **microsocks:** Direct SOCKS5 on :1082, for LAN clients (iPhone)
 - **No conflict** — different ports, different purposes
 
-## Go CLI clients и нечитаемые env vars
+## Go CLI клиенты и HTTP_PROXY
 
-**Проблема:** Go-клиенты (agy/Antigravity CLI, некоторые тулы от Google) игнорируют `socks5h://` в `HTTP_PROXY`. Переменная `HTTP_PROXY=socks5h://127.0.0.1:1080` не работает — Go ожидает HTTP прокси.
+**Проблема:** Go-клиенты не поддерживают `socks5://` в `HTTP_PROXY` — Go ожидает HTTP-прокси (CONNECT). `ALL_PROXY=socks5://...` тоже игнорируется большинством Go-приложений.
 
-### agy (Antigravity CLI) — известный баг #113
+### Решение: sing-box mixed inbound (проще всего)
 
-`agy` использует **кастомный HTTP транспорт** для OAuth token exchange — он **не читает** `http.ProxyFromEnvironment`. Даже если поднять HTTP→SOCKS5 мост и выставить `HTTP_PROXY=http://127.0.0.1:18888` — agy всё равно идёт напрямую.
-Баг зарепорчен upstream: https://github.com/google-antigravity/antigravity-cli/issues/113
-
-**Единственное надёжное решение для agy — TUN/VPN на уровне сети.** Переменные окружения и прокси-мосты не помогают. Нужно, чтобы TCP-соединение к `172.217.0.0/16` (Google) физически не могло уйти мимо TUN.
-
-### TUN-based решение (sing-box)
-
-Если sing-box TUN не перехватывает Google IP (`route -n get 172.217.x.x` показывает `interface: en0`, а не `utun`), добавить split-default маршруты:
-
-```bash
-sudo route add -net 0.0.0.0/1 -interface utun9
-sudo route add -net 128.0.0.0/1 -interface utun9
-```
-
-Причина: `auto_route` + `strict_route` в gvisor стеке на macOS не всегда устанавливает TUN как default route. Split-default (`0/1` + `128/1`) покрывает весь IPv4 адресный простор — любой IP попадает либо в первый, либо во второй диапазон.
-
-После добавления — проверить:
-```bash
-route -n get 172.217.216.95
-# Должен показать: interface utun9
-curl -s --connect-timeout 5 -o /dev/null -w "%{http_code}" https://oauth2.googleapis.com/token
-# Должен вернуть 404 (но не timeout!)
-```
-
-**Перманентный фикс** — прописать в конфиг sing-box:
+Добавить в sing-box inbound типа `mixed` — он слушает и HTTP (CONNECT), и SOCKS5 на одном порту:
 
 ```json
-"inbounds": [{
-  "type": "tun",
-  "auto_route": true,
-  "strict_route": true,
-  "stack": "gvisor",
-  "route_address": ["0.0.0.0/1", "128.0.0.0/1"],
-  "route_exclude_address": [
-    "127.0.0.0/8", "10.0.0.0/8", "172.16.0.0/12",
-    "192.168.0.0/16", "224.0.0.0/4", "240.0.0.0/4"
-  ]
-}]
-```
-
-### Альтернатива: FakeIP DNS (самое чистое, но сложное решение)
-
-Вместо split-default — перехватить DNS через sing-box с FakeIP. Он отдаёт системе фиктивный IP (из `198.18.0.0/15`) вместо реального IP Google. Подсеть гарантированно завернётся в TUN:
-
-```json
-"dns": {
-  "servers": [
-    {"tag": "fakeip", "address": "fakeip"}
-  ],
-  "rules": [
-    {"outbound": "any", "server": "fakeip"}
-  ],
-  "fakeip": {
-    "enabled": true,
-    "inet4_range": "198.18.0.0/15"
-  }
+{
+  "type": "mixed",
+  "tag": "mixed-in",
+  "listen": "127.0.0.1",
+  "listen_port": 1083
 }
 ```
 
-Параметры `sniff: true` и `sniff_override_destination: true` в inbound TUN заставляют sing-box вычитывать домен из TLS SNI пакета, даже если запрос пришёл по IP.
+После перезапуска sing-box:
+```bash
+export HTTP_PROXY=http://127.0.0.1:1083
+export HTTPS_PROXY=http://127.0.0.1:1083
+agy  # работает
+```
 
-### Итог: что делать с "непослушными" Go-клиентами
+Трафик: Go-app → localhost:1083 (HTTP CONNECT) → sing-box → outbound → internet.
+Go-приложение видит HTTP-прокси (работает), sing-box внутри может форвардить через SOCKS5.
 
-| Уровень | Метод | Работает для agy? |
-|---------|-------|-------------------|
-| env vars | `HTTP_PROXY=http://...` | НЕТ (баг #113) |
-| env vars | `ALL_PROXY=socks5://...` | НЕТ |
-| HTTP→SOCKS5 bridge | порт 18888 | НЕТ |
-| **TUN split-default** | route add 0/1 + 128/1 | **ДА** |
-| **FakeIP DNS** | sing-box | **ДА** |
+**Проверка:** `curl -s --proxy http://127.0.0.1:1083 https://ipinfo.io/json` — должен вернуть US IP.
 
-**Вывод:** для agy в Китае единственный рабочий метод — TUN, который гарантирует что трафик до Google не уйдёт напрямую в en0.
+**Актуально для:** agy (Antigravity CLI), Claude Code, OpenCode, любые Go-бинарники.
 
-### Решение: HTTP→SOCKS5 мост на Python (чистый stdlib, без зависимостей):
+### Альтернатива: Python HTTP→SOCKS5 мост (когда sing-box не вариант)
+
+Если нет sing-box, можно поднять простой HTTP CONNECT прокси, который форвардит в SOCKS5:
 
 ```python
 # /tmp/http2socks.py — HTTP CONNECT прокси, форвардит в SOCKS5
