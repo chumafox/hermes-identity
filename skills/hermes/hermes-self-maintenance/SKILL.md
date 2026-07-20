@@ -49,6 +49,11 @@ related_skills: []
 #!/bin/bash
 IDENTITY_DIR="$HOME/hermes-identity"
 
+# Generate memory backup from flat files
+if [ -f "$HOME/.hermes/memories/MEMORY.md" ]; then
+  "$IDENTITY_DIR/scripts/generate-memory-backup.sh" > "$IDENTITY_DIR/memory-backup.md" 2>/dev/null || true
+fi
+
 # Copy identity files from Hermes home → repo
 cp "$HOME/.hermes/SOUL.md" "$IDENTITY_DIR/soul.md" 2>/dev/null || true
 cp "$HOME/.hermes/AGENTS.md" "$IDENTITY_DIR/AGENTS.md" 2>/dev/null || true
@@ -115,6 +120,24 @@ StrictHostKeyChecking no
 ```bash
 git rm -r --cached skills/**/node_modules/
 ```
+
+### generate-memory-backup.sh — скрипт для memory-backup.md
+
+В `scripts/generate-memory-backup.sh` лежит баш-скрипт, который читает `~/.hermes/memories/MEMORY.md` и `USER.md`, парсит numbered-line формат и выводит готовый human-readable markdown в stdout.
+
+Использование в sync.sh или вручную:
+```bash
+~/hermes-identity/scripts/generate-memory-backup.sh > ~/hermes-identity/memory-backup.md
+```
+
+### Двойное имя скилла (name collision)
+
+Этот скилл существует в двух местах:
+- `~/.hermes/skills/hermes-self-maintenance/SKILL.md` (flat)
+- `~/.hermes/skills/hermes/hermes-self-maintenance/SKILL.md` (categorized)
+
+При загрузке по `hermes-self-maintenance` Hermes выдаёт ошибку двусмысленности. Рабочий qualified path: `hermes/hermes-self-maintenance`. Для `skill_manage` использовать голое имя `hermes-self-maintenance`.
+См. `references/name-collision-resolution.md` для деталей.
 
 ### write_file timeout при копировании skills
 

@@ -1,7 +1,12 @@
 # Memory Backup
-Generated: 2026-07-19 (cron identity sync)
+Generated: 2026-07-20 (cron identity sync)
 
-## Durable Facts (from built-in memory store)
+## Статус
+
+Memory tool недоступен в этом окружении (вероятно, отключён для cron задач).
+Предыдущий бэкап от 2026-07-19 сохранён в git history.
+
+## История предыдущих фактов (из git history)
 
 ### Doubao & Voice
 - Doubao (CDP 9223): ASR EN+ZH only. Inject: BlackHole+ffmpeg audiotoolbox
