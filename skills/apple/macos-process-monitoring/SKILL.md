@@ -23,16 +23,64 @@ ps axo pid,pcpu,pmem,rss,comm -m | head -25
 # 45081  31.9  2.0 171072 opencode  → 171MB RSS
 ```
 
+## Battery Drain Diagnosis
+
+Когда пользователь жалуется на быстрый разряд батареи — не просто смотри CPU, а делай три шага:
+
+### 1. Текущее состояние батареи
+
+```bash
+pmset -g batt
+# → "53%; discharging; 1:54 remaining"
+```
+
+### 2. Энергопотребление процессов (POWER)
+
+`top` умеет сортировать по колонке POWER — она показывает энергопотребление каждого процесса относительно других. Это важнее %CPU для диагностики разряда.
+
+```bash
+top -l 2 -stats pid,cpu,power,mem,command -o power -n 20 | tail -25
+```
+
+Флаг `-l 2` нужен для двух выборок (первая — instant, вторая — усреднённая). Всегда используй `-l 2`.
+
+Колонка POWER — относительная шкала 0.0–10.0+. Процессы с POWER > 3 — подозрительные. > 5 — аномалия.
+
+### 3. Здоровье батареи
+
+```bash
+system_profiler SPPowerDataType | grep -E "Cycle Count|Condition|Maximum Capacity"
+```
+
+- Cycle Count < 200, Condition = Normal, Max Capacity > 90% — батарея в порядке
+- Cycle Count > 800 или Max Capacity < 80% — пора менять
+
+### 4. Причины пробуждения (если батарея уходит в спящем режиме)
+
+```bash
+pmset -g log | grep -i "Wake.*reason\|DarkWake\|Wake Requests" | tail -20
+```
+
+- `NUB.SPMI0Sw3IRQ` + `rtc/Maintenance` — нормальные фоновые пробуждения (~каждые 15-20 мин, 45 сек)
+- `USB-C_plug` — физическое подключение кабеля
+- `com.apple.dasd:501:com.apple.searchd.heartbeat` — Spotlight heartbeat
+- Много частых DarkWake (>1 в 5 мин) = проблема
+
 ## Common Offenders on M1 8GB
 
 | Process | Typical RSS | Notes |
 |---------|-------------|-------|
-| Yandex Helper (Renderer) | 180-590MB | Multiple renderers, biggest hog |
+| Yandex Helper (Renderer) | 180-590MB | Multiple renderers, biggest hog. 25+ processes. |
 | opencode | 140-170MB | Can hang after cancel (31% CPU, loops build/compaction). Kill manually. |
+| agy | 200-375MB | **Main battery killer.** `agy --continue` can hang for 90+ min CPU-time eating a full core. Проверять CPU time (`90:25.99` = 90 мин). Kill and restart. |
+| Hermes (python3) | 60-340MB | Two+ processes possible (Hermes + bridge workers). PID 10672 main, PID 9350 bridge. |
+| Ghostty | 553MB | High RSS but idle CPU — memory usage, not battery. |
+| WindowServer | 468MB | Many open windows = high memory. Expected. |
+| CloudflareWARP | 93MB | VPN — minimal CPU, fixed overhead. |
+| IINA | 243MB | Media player — power impact depends on playback. |
+| Finder | 135MB | **>2% CPU / >1 POWER = abnormal.** 7% CPU значит Finder завис или активно индексирует. Kill + relaunch: `killall Finder`. |
 | omlx-server | 18-284MB | Grows when model loaded. launchd-managed — kill -9 + launchctl unload. |
-| Hermes (python3) | 60-85MB | Normal |
 | Brave Browser | 50-55MB | Per process |
-| agy | 374MB | If running |
 | airportd | 16MB | Spikes to 17% CPU occasionally |
 
 ## Killing Processes
@@ -119,3 +167,22 @@ sudo shutdown -r now
 - `networksetup -setairportpower en0 off/on` — безопасно, не ломает драйвер
 - `sudo launchctl unload /System/Library/LaunchDaemons/com.apple.airportd.plist` + load — мягкий перезапуск службы Wi-Fi
 - `sudo ifconfig en0 down` — **ЗАПРЕЩЕНО** на Apple Silicon
+
+## Battery health check summary
+
+После сбора данных формат ответа пользователю:
+
+```
+**Батарея:** N циклов, X% ёмкости — [в порядке|пора менять].
+
+**Главный виновник — `process-name`**
+```
+process-name args
+— X% CPU, YMB RAM, Z минут CPU-времени
+```
+
+**Остальные подозреваемые:**
+| Процесс | POWER | %CPU | RAM | Примечание |
+```
+
+Перечислять только процессы с POWER > 0.5. Если есть явный лидер (POWER вдвое больше второго) — выделить его отдельно как главного виновника.
