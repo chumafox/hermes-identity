@@ -1,10 +1,10 @@
 # Memory Backup
-Generated: 2026-07-20 (cron identity sync)
+Generated: 2026-07-22 (cron identity sync)
 
 ## Статус
 
-Memory tool недоступен в этом окружении (вероятно, отключён для cron задач).
-Предыдущий бэкап от 2026-07-19 сохранён в git history.
+Memory tool недоступен в этом окружении (отключён для cron задач).
+Предыдущий бэкап от 2026-07-20 сохранён в git history.
 
 ## История предыдущих фактов (из git history)
 
