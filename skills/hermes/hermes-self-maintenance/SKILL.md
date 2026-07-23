@@ -59,7 +59,9 @@ cp "$HOME/.hermes/SOUL.md" "$IDENTITY_DIR/soul.md" 2>/dev/null || true
 cp "$HOME/.hermes/AGENTS.md" "$IDENTITY_DIR/AGENTS.md" 2>/dev/null || true
 
 # Use rsync for skills (handles large dirs, preserves structure, deletes stale)
-rsync -a --delete "$HOME/.hermes/skills/" "$IDENTITY_DIR/skills/" 2>/dev/null || true
+# --exclude .curator_backups: Hermes curator создаёт gzip-архивы для отката,
+# они не нужны в identity-репозитории (занимают место, меняются каждый день).
+rsync -a --delete --exclude .curator_backups/ "$HOME/.hermes/skills/" "$IDENTITY_DIR/skills/" 2>/dev/null || true
 
 # Copy back from repo → Hermes home (for files loaded by Hermes)
 cp "$IDENTITY_DIR/soul.md" "$HOME/.hermes/SOUL.md" 2>/dev/null || true
@@ -149,16 +151,17 @@ rsync -a --delete ~/.hermes/skills/ ~/hermes-identity/skills/
 
 Если нужно записать отдельный файл через write_file — убедись, что содержимое < ~8K токенов. Большие файлы дробить на несколько write_file вызовов.
 
-### memory tool недоступен в cron, но flat-файлы читаются
+### memory tool недоступен в cron — стратегия на практике
 
 `memory()` (и `hermes memory list`) не работают в контексте cron-запуска.
 Однако flat-файлы `~/.hermes/memories/MEMORY.md` и `USER.md` доступны
-напрямую через `read_file` или `cat`. Стратегия:
+напрямую через `read_file` или `cat`. Стратегия в cron:
 
-- В cron: читать MEMORY.md + USER.md напрямую из файловой системы
-- Парсить numbered-line формат (`N|content`), пропуская `§`-разделители
-- Переформатировать в human-readable markdown и записать в memory-backup.md
-- См. `references/memory-filesystem-layout.md` для деталей формата и парсинга
+1. Проверить, существует ли `scripts/generate-memory-backup.sh` в `~/hermes-identity/`. Если да — запустить его.
+2. Если скрипта нет — прочитать `~/.hermes/memories/MEMORY.md` и `USER.md` напрямую через read_file.
+3. Парсить numbered-line формат (`N|content`), пропуская `§`-разделители, переформатировать в human-readable markdown.
+4. Если и flat-файлы недоступны — **оставить существующий memory-backup.md без изменений** (только обновить дату). Предыдущий бэкап — лучше, чем пустой файл.
+5. См. `references/memory-filesystem-layout.md` для деталей формата и парсинга.
 
 ### AGENTS.md может быть уже идентичен
 
